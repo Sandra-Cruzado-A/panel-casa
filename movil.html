@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F5C3F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Casa">
+<title>Casa</title>
+<link rel="manifest" href="manifest-movil.webmanifest">
+<link rel="icon" href="icon-movil-192.png">
+<link rel="apple-touch-icon" href="icon-movil-192.png">
+<style>
+@font-face { font-family: 'Lexend'; font-weight: 500; src: url(fuentes/lexend-latin-500-normal.woff2) format('woff2'), url(fuentes/lexend-latin-500-normal.woff) format('woff'); }
+@font-face { font-family: 'Lexend'; font-weight: 600; src: url(fuentes/lexend-latin-600-normal.woff2) format('woff2'), url(fuentes/lexend-latin-600-normal.woff) format('woff'); }
+@font-face { font-family: 'Nunito Sans'; font-weight: 400; src: url(fuentes/nunito-sans-latin-400-normal.woff2) format('woff2'), url(fuentes/nunito-sans-latin-400-normal.woff) format('woff'); }
+@font-face { font-family: 'Nunito Sans'; font-weight: 600; src: url(fuentes/nunito-sans-latin-600-normal.woff2) format('woff2'), url(fuentes/nunito-sans-latin-600-normal.woff) format('woff'); }
+@font-face { font-family: 'Nunito Sans'; font-weight: 700; src: url(fuentes/nunito-sans-latin-700-normal.woff2) format('woff2'), url(fuentes/nunito-sans-latin-700-normal.woff) format('woff'); }
+@font-face { font-family: 'Nunito Sans'; font-weight: 800; src: url(fuentes/nunito-sans-latin-800-normal.woff2) format('woff2'), url(fuentes/nunito-sans-latin-800-normal.woff) format('woff'); }
+html, body { margin: 0; padding: 0; background: #EEF4EF; color: #1D2B23; font-family: 'Nunito Sans', -apple-system, Roboto, "Segoe UI", Arial, sans-serif;
+  -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-text-size-adjust: 100%; font-size: 16px; }
+* { box-sizing: border-box; }
+button, input, select, textarea { font-family: inherit; font-size: 1rem; }
+button { cursor: pointer; }
+.oculto { display: none !important; }
+.flex { display: flex; }
+.centro { align-items: center; }
+.uno { flex: 1 1 0px; min-width: 0; }
+.tit { font-family: Lexend, 'Nunito Sans', sans-serif; }
+
+header { position: sticky; top: 0; z-index: 5; background: #EEF4EF; padding: calc(env(safe-area-inset-top) + 14px) 18px 10px; }
+header h1 { margin: 0; font-family: Lexend, 'Nunito Sans', sans-serif; font-size: 1.7rem; font-weight: 600; }
+#estado { font-size: .78rem; color: #8A988F; margin-top: 2px; font-weight: 600; }
+main { padding: 4px 16px calc(env(safe-area-inset-bottom) + 96px); }
+nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: #FFFFFF; border-top: 1px solid #DCE7DE; padding: 6px 4px calc(env(safe-area-inset-bottom) + 6px); }
+nav button { flex: 1; background: none; border: 0; color: #6A7A70; font-size: .74rem; font-weight: 700; padding: 6px 0 4px; position: relative; }
+nav button svg { display: block; margin: 0 auto 3px; width: 24px; height: 24px; }
+nav button.activa { color: #1F5C3F; }
+nav button.activa svg { background: #E2EFE6; border-radius: 12px; padding: 2px 12px; width: 48px; box-sizing: content-box; margin-bottom: 1px; }
+nav b { position: absolute; top: 2px; left: 55%; background: #E9B824; color: #2E2400; border-radius: 10px; padding: 0 6px; font-size: .68rem; }
+nav b:empty { display: none; }
+
+.tarjeta { background: #FFFFFF; border: 1px solid #DCE7DE; border-radius: 18px; padding: 14px; margin-bottom: 14px; }
+h2 { font-family: Lexend, 'Nunito Sans', sans-serif; font-size: 1.05rem; font-weight: 600; margin: 2px 0 10px; color: #1F5C3F; }
+.campo { width: 100%; background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-radius: 12px; padding: 12px 14px; font-size: 1.05rem; }
+.boton { background: #FFFFFF; color: #1D2B23; border: 1px solid #CFDCD2; border-radius: 12px; padding: 11px 16px; font-weight: 700; }
+.boton.prim { background: #1F5C3F; border-color: #1F5C3F; color: #FFFFFF; }
+.boton.peq { padding: 7px 12px; font-size: .9rem; }
+.vacio { color: #5A6A60; padding: 12px 2px; }
+.ayuda { color: #5A6A60; font-size: .88rem; line-height: 1.45; }
+label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight: 700; margin: 14px 0 6px; }
+.punto { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+
+/* compra */
+.add .campo { margin-right: 8px; }
+.fila-scroll { overflow-x: auto; white-space: nowrap; margin: 10px -16px 4px; padding: 0 16px 4px; -webkit-overflow-scrolling: touch; }
+.sec-chip { display: inline-block; padding: 6px 12px; border-radius: 16px; border: 1px solid #DCE7DE; margin-right: 6px; color: #4C5E53; background: #FFFFFF; font-size: .88rem; font-weight: 700; }
+.sec-chip.activo { background: #1F5C3F; color: #FFFFFF; border-color: #1F5C3F; }
+.sug { display: inline-block; padding: 6px 12px; border: 1px dashed #B8C8BC; border-radius: 16px; margin-right: 6px; color: #4C5E53; font-size: .9rem; }
+.bloque { margin-top: 12px; }
+.bloque-tit { font-family: Lexend, 'Nunito Sans', sans-serif; font-weight: 600; color: #1F5C3F; font-size: 1rem; padding-bottom: 4px; border-bottom: 2px solid #E2EFE6; }
+.bloque-tit small { color: #8A988F; font-family: 'Nunito Sans', sans-serif; margin-left: 4px; }
+.ci { padding: 12px 2px; border-bottom: 1px solid #E8EFE9; font-size: 1.1rem; font-weight: 600; }
+.caja { width: 26px; height: 26px; border: 2px solid #9FB1A5; border-radius: 8px; margin-right: 14px; flex-shrink: 0; text-align: center; line-height: 22px; color: #FFFFFF; font-size: 1rem; }
+.ci.hecho .caja { background: #3A9D5D; border-color: #3A9D5D; }
+.ci.hecho .ci-t { text-decoration: line-through; color: #8A988F; }
+.ci-por { font-size: .75rem; color: #8A988F; margin-left: 8px; font-weight: 700; }
+.ci-x { background: none; border: 0; color: #B8C4BC; font-size: 1.5rem; padding: 0 6px 0 12px; }
+
+/* agenda */
+.dia { margin-bottom: 16px; }
+.dia-tit { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: #5A6A60; font-weight: 800; margin-bottom: 6px; }
+.dia-hoy .dia-tit { color: #1F5C3F; }
+.ev { padding: 9px 0; border-top: 1px solid #E8EFE9; }
+.ev:first-of-type { border-top: 0; }
+.ev-hora { width: 52px; flex-shrink: 0; }
+.ev-hora b { display: block; font-weight: 800; }
+.ev-hora span { font-size: .8rem; color: #5A6A60; }
+.barras { width: 4px; border-radius: 2px; margin: 2px 12px 2px 0; align-self: stretch; display: flex; flex-direction: column; overflow: hidden; }
+.barras i { flex: 1; }
+.ev-tit { font-size: 1.05rem; font-weight: 700; }
+.ev-meta { font-size: .82rem; color: #5A6A60; margin-top: 2px; }
+.chip { display: inline-block; padding: 4px 11px; border-radius: 14px; font-size: .88rem; font-weight: 700; margin: 0 6px 6px 0; }
+.fab { position: fixed; right: 18px; bottom: calc(env(safe-area-inset-bottom) + 86px); z-index: 5; background: #1F5C3F; color: #FFFFFF; border: 0; border-radius: 28px; padding: 15px 22px; font-weight: 800; font-size: 1rem; box-shadow: 0 6px 18px rgba(31,92,63,.35); }
+
+/* tablón */
+.nota { padding: 12px 0; border-top: 1px solid #E8EFE9; align-items: flex-start; }
+.nota:first-child { border-top: 0; }
+.mini-av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .9rem; margin-right: 12px; flex-shrink: 0; }
+.nota-t { font-size: 1.05rem; font-weight: 700; }
+.nota-m { font-size: .82rem; color: #5A6A60; margin-top: 2px; }
+
+/* cumpleaños */
+.cu { padding: 10px 0; border-top: 1px solid #E8EFE9; }
+.cu:first-child { border-top: 0; }
+.cu-fecha { width: 52px; text-align: center; margin-right: 14px; background: #EEF4EF; border-radius: 10px; padding: 5px 0; }
+.cu-fecha b { display: block; font-family: Lexend, 'Nunito Sans', sans-serif; font-size: 1.2rem; font-weight: 600; }
+.cu-fecha span { font-size: .7rem; color: #5A6A60; text-transform: uppercase; font-weight: 800; }
+.cu-hoy .cu-fecha { background: #F27BA6; color: #FFFFFF; }
+.cu-hoy .cu-fecha span { color: #FFFFFF; }
+.cu-txt b { display: block; font-weight: 800; }
+.cu-txt span { font-size: .85rem; color: #5A6A60; }
+.borrar-x { background: none; border: 1px solid transparent; color: #9FB1A5; font-size: 1.3rem; padding: 4px 10px; border-radius: 8px; }
+.borrar-x.confirmar { color: #C0392B; border-color: #C0392B; font-size: .85rem; font-weight: 800; }
+.fila3 select { margin-right: 6px; }
+
+/* hoja inferior */
+.hoja { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(20,35,26,.45); }
+.hoja-caja { position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; background: #FFFFFF; border-radius: 22px 22px 0 0; padding: 18px 18px calc(env(safe-area-inset-bottom) + 18px); }
+.hoja-caja h3 { margin: 0; font-family: Lexend, 'Nunito Sans', sans-serif; font-size: 1.3rem; font-weight: 600; }
+.elige { display: inline-block; padding: 8px 14px; border-radius: 18px; border: 1px solid #DCE7DE; margin: 0 8px 8px 0; color: #4C5E53; font-weight: 700; background: #FFFFFF; }
+.fila-hora input { width: auto; margin-right: 8px; }
+.interruptor { margin: 10px 0; font-weight: 700; }
+.interruptor input { width: 22px; height: 22px; margin-right: 10px; }
+.cal-op { padding: 8px 0; border-top: 1px solid #E8EFE9; font-size: .95rem; font-weight: 700; }
+.cal-op input { width: 20px; height: 20px; margin-right: 10px; }
+.cal-op small { display: block; color: #8A988F; font-size: .78rem; font-weight: 600; }
+#toast { position: fixed; left: 16px; right: 16px; bottom: calc(env(safe-area-inset-bottom) + 150px); z-index: 20; text-align: center; pointer-events: none; }
+#toast span { display: inline-block; background: #1D2B23; color: #FFFFFF; padding: 10px 16px; border-radius: 20px; font-size: .95rem; font-weight: 700; }
+.ok { color: #2E7D4F; } .mal { color: #C0392B; }
+</style>
+</head>
+<body>
+<header><h1 id="titulo">Compra</h1><div id="estado"></div></header>
+
+<main>
+  <section id="v-compra">
+    <div class="add flex centro">
+      <input type="text" id="compra-input" class="campo uno" placeholder="¿Qué hace falta?" autocomplete="off" enterkeyhint="done" maxlength="120">
+      <button class="boton prim" id="compra-btn">Añadir</button>
+    </div>
+    <div id="secciones" class="fila-scroll"></div>
+    <div id="sugs" class="fila-scroll"></div>
+    <div id="compra-lista"></div>
+    <div style="margin-top:16px"><button class="boton peq oculto" id="compra-limpiar">Borrar lo comprado</button></div>
+  </section>
+
+  <section id="v-agenda" class="oculto">
+    <div id="agenda"></div>
+    <button class="fab" id="btn-evento">+ Evento</button>
+  </section>
+
+  <section id="v-tablon" class="oculto">
+    <div class="tarjeta">
+      <h2>Dejar un mensaje</h2>
+      <textarea id="nota-texto" class="campo" rows="3" maxlength="200" placeholder="Por ejemplo: llego tarde a cenar"></textarea>
+      <div class="flex centro" style="margin-top:10px"><span id="nota-de" class="ayuda uno"></span><button class="boton prim" id="nota-guardar">Publicar</button></div>
+    </div>
+    <div class="tarjeta"><h2>En el tablón</h2><div id="notas"></div></div>
+  </section>
+
+  <section id="v-cumples" class="oculto">
+    <div class="tarjeta">
+      <h2>Añadir cumpleaños</h2>
+      <input type="text" id="cu-nombre" class="campo" placeholder="Nombre" maxlength="60" autocomplete="off">
+      <div class="fila3 flex centro" style="margin-top:10px"><select id="cu-dia" class="campo uno"></select><select id="cu-mes" class="campo uno"></select><select id="cu-anio" class="campo uno"></select></div>
+      <div style="margin-top:12px"><button class="boton prim" id="cu-guardar">Guardar</button></div>
+    </div>
+    <div class="tarjeta"><h2>Próximos</h2><div id="cumples"></div></div>
+  </section>
+
+  <section id="v-ajustes" class="oculto">
+    <div class="tarjeta">
+      <h2>Conexión</h2>
+      <label class="campo-et" for="aj-api">URL del Apps Script (acaba en /exec)</label>
+      <textarea id="aj-api" class="campo" rows="3" placeholder="https://script.google.com/macros/s/.../exec"></textarea>
+      <label class="campo-et" for="aj-yo">¿Quién eres?</label>
+      <select id="aj-yo" class="campo"></select>
+      <div style="margin-top:12px"><button class="boton prim" id="aj-guardar">Guardar</button></div>
+      <p class="ayuda" id="aj-info"></p>
+    </div>
+    <div class="tarjeta oculto" id="nativo">
+      <h2>Avisos de eventos nuevos</h2>
+      <p class="ayuda">Cuando crees un evento en tu calendario, te saldrá una notificación para añadirlo también a la tablet de casa.</p>
+      <label class="interruptor flex centro"><input type="checkbox" id="na-activo">Preguntarme cada vez</label>
+      <div id="na-permisos" class="ayuda"></div>
+      <label class="campo-et" for="na-cuenta">Cuenta o calendario de casa</label>
+      <input type="text" id="na-cuenta" class="campo" placeholder="casa.familia@gmail.com" autocomplete="off">
+      <label class="campo-et" for="na-modo">Cómo añadirlo</label>
+      <select id="na-modo" class="campo">
+        <option value="invitar">Invitar a la cuenta de casa (recomendado)</option>
+        <option value="copiar">Copiar en el calendario de casa</option>
+      </select>
+      <p class="ayuda">Invitando, el evento sigue siendo uno solo: si luego le cambias la hora, también cambia en la tablet. Copiar sirve para calendarios que no son de Google; para eso el calendario de casa tiene que estar compartido contigo.</p>
+      <label class="campo-et">Calendarios de este móvil que vigilar</label>
+      <div id="na-calendarios"></div>
+      <div style="margin-top:14px" class="flex"><button class="boton prim" id="na-guardar" style="margin-right:8px">Guardar avisos</button><button class="boton" id="na-probar">Probar aviso</button></div>
+    </div>
+  </section>
+</main>
+
+<nav class="flex">
+  <button data-v="compra" class="activa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>Compra<b id="badge"></b></button>
+  <button data-v="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Agenda</button>
+  <button data-v="tablon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M15 20v-5h5M8 9h8M8 13h5"/></svg>Tablón</button>
+  <button data-v="cumples"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16v-7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7z"/><path d="M4 15c2 1.5 4 1.5 5.3 0s3.4-1.5 5.4 0 3.3 1.5 5.3 0M12 11V7"/><path d="M12 3.5c.9 1 .9 2 0 2.6-.9-.6-.9-1.6 0-2.6z"/></svg>Cumples</button>
+  <button data-v="ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2.2" fill="#FFFFFF"/><circle cx="15" cy="12" r="2.2" fill="#FFFFFF"/><circle cx="8" cy="18" r="2.2" fill="#FFFFFF"/></svg>Ajustes</button>
+</nav>
+
+<div id="hoja-evento" class="hoja oculto">
+  <div class="hoja-caja">
+    <div class="flex centro"><h3 class="uno">Nuevo evento en casa</h3><button class="boton peq" data-cerrar="hoja-evento">Cancelar</button></div>
+    <label class="campo-et" for="ev-titulo">Qué</label>
+    <input type="text" id="ev-titulo" class="campo" maxlength="120" autocomplete="off">
+    <label class="campo-et" for="ev-fecha">Cuándo</label>
+    <input type="date" id="ev-fecha" class="campo">
+    <label class="interruptor flex centro"><input type="checkbox" id="ev-todo">Todo el día</label>
+    <div id="ev-horas" class="fila-hora flex centro">De&nbsp;<input type="time" id="ev-hi" class="campo" step="900">&nbsp;a&nbsp;<input type="time" id="ev-hf" class="campo" step="900"></div>
+    <label class="campo-et">Para quién</label>
+    <div id="ev-personas"></div>
+    <label class="campo-et" for="ev-lugar">Dónde (opcional)</label>
+    <input type="text" id="ev-lugar" class="campo" maxlength="120" autocomplete="off">
+    <div style="margin-top:16px"><button class="boton prim" id="ev-guardar" style="width:100%">Guardar en el calendario de casa</button></div>
+    <p id="ev-error" class="ayuda mal"></p>
+  </div>
+</div>
+
+<div id="toast" class="oculto"><span id="toast-txt"></span></div>
+
+<script>
+/* Casa (móvil) · v3 */
+(function () {
+  'use strict';
+  var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  var MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  var SECCIONES = ['Fruta y verdura', 'Panadería', 'Carne y pescado', 'Lácteos y huevos', 'Despensa', 'Congelados', 'Bebidas', 'Limpieza', 'Higiene y farmacia', 'Otros'];
+  var COLOR_CUMPLE = '#F27BA6', VERDE = '#1F5C3F';
+  var TITULOS = { compra: 'Compra', agenda: 'Agenda de casa', tablon: 'Tablón', cumples: 'Cumpleaños', ajustes: 'Ajustes' };
+
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function ahoraMs() { return new Date().getTime(); }
+  function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function hm(ms) { var d = new Date(ms); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function inicioDia(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + (n || 0)); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function sinTildes(s) {
+    var t = String(s || '').toLowerCase(), de = 'áàäâéèëêíìïîóòöôúùüûñç', a = 'aaaaeeeeiiiioooouuuunc', r = '';
+    for (var i = 0; i < t.length; i++) { var k = de.indexOf(t.charAt(i)); r += k > -1 ? a.charAt(k) : t.charAt(i); }
+    return r;
+  }
+  function normalizar(s) { return sinTildes(s).replace(/[^a-z0-9]/g, ''); }
+  function rgbDe(hex) { var n = parseInt(String(hex || '#888888').replace('#', ''), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+  function rgba(hex, a) { var c = rgbDe(hex); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+  function luz(hex) { var c = rgbDe(hex); return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; }
+  function oscurecer(hex, f) { var c = rgbDe(hex); return 'rgb(' + Math.round(c[0] * (1 - f)) + ',' + Math.round(c[1] * (1 - f)) + ',' + Math.round(c[2] * (1 - f)) + ')'; }
+  function colorTexto(hex) { return luz(hex) > 0.55 ? oscurecer(hex, 0.48) : hex; }
+  function colorSobre(hex) { return luz(hex) > 0.6 ? oscurecer(hex, 0.75) : '#FFFFFF'; }
+  function mostrar(id, si) { var el = $(id); if (si) el.classList.remove('oculto'); else el.classList.add('oculto'); }
+  var nativo = window.CasaNativo || null;
+  function lsGet(k, def) {
+    try { var v = nativo ? nativo.leer(k) : localStorage.getItem(k); if (v === null || v === undefined || v === '') return def; var r = JSON.parse(v); return r === null ? def : r; } catch (e) { return def; }
+  }
+  function lsSet(k, v) { try { var s = JSON.stringify(v); if (nativo) nativo.guardar(k, s); else localStorage.setItem(k, s); } catch (e) {} }
+  var toastT;
+  function toast(m) { $('toast-txt').innerHTML = esc(m); mostrar('toast', true); clearTimeout(toastT); toastT = setTimeout(function () { mostrar('toast', false); }, 3000); }
+
+  var cfg = lsGet('casa.cfg', null) || { api: '', yo: '' };
+  var datos = lsGet('casa.datos', null);
+  var historial = lsGet('casa.historial', {});
+  var seccionesLocales = lsGet('casa.secciones', {});
+  var vista = 'compra', ultimoOk = lsGet('casa.ultimoOk', 0), cargando = false, borrarPendiente = null;
+  var seccionElegida = null, seccionManual = false, evPersonas = [];
+
+  (function () {
+    var href = location.href, i = href.indexOf('api=');
+    if (i > 0 && (href.charAt(i - 1) === '?' || href.charAt(i - 1) === '&')) {
+      var v = href.substring(i + 4).split('#')[0];
+      try { v = decodeURIComponent(v); } catch (e) {}
+      if (/^https:\/\//.test(v)) { cfg.api = v; lsSet('casa.cfg', cfg); }
+      if (history.replaceState) history.replaceState(null, '', location.pathname);
+    }
+  })();
+
+  /* ---------- API ---------- */
+  function jsonp(url, ok, ko) {
+    var nombre = 'casacb' + ahoraMs() + Math.floor(Math.random() * 1000), s = document.createElement('script'), hecho = false;
+    function fin() { clearTimeout(t); window[nombre] = function () {}; if (s.parentNode) s.parentNode.removeChild(s); }
+    var t = setTimeout(function () { if (hecho) return; hecho = true; fin(); ko('No responde el Apps Script'); }, 40000);
+    window[nombre] = function (r) { if (hecho) return; hecho = true; fin(); ok(r); };
+    s.onerror = function () { if (hecho) return; hecho = true; fin(); ko('Sin conexión'); };
+    s.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'callback=' + nombre + '&_=' + ahoraMs();
+    document.head.appendChild(s);
+  }
+  function api(params, ok, ko) {
+    ko = ko || function (m) { toast(m); };
+    if (!cfg.api) { ko('Primero pon la URL del Apps Script en Ajustes'); return; }
+    var q = [];
+    for (var k in params) if (params.hasOwnProperty(k)) q.push(k + '=' + encodeURIComponent(params[k]));
+    jsonp(cfg.api + (cfg.api.indexOf('?') < 0 ? '?' : '&') + q.join('&'), function (r) { if (r && r.ok) ok(r); else ko((r && r.error) || 'Error'); }, ko);
+  }
+  function guardarLocal() { lsSet('casa.datos', { eventos: datos.eventos, compra: datos.compra, cumples: datos.cumples, notas: datos.notas, casa: datos.casa }); }
+  function cargar() {
+    if (!cfg.api) { pintarTodo(); cambiar('ajustes'); return; }
+    if (cargando) return;
+    cargando = true; pintarEstado();
+    api({}, function (r) {
+      cargando = false; datos = r; ultimoOk = ahoraMs();
+      guardarLocal(); lsSet('casa.ultimoOk', ultimoOk);
+      autoconfigurarNativo(); pintarTodo();
+      if (vista === 'ajustes') pintarAjustesDatos($('aj-yo').value || cfg.yo || '');
+    }, function (m) { cargando = false; pintarEstado(m); if (vista === 'ajustes') $('aj-info').innerHTML = '<span class="mal">No conecta: ' + esc(m) + '. Revisa la URL.</span>'; });
+  }
+  function cargarListas() { if (!cfg.api || cargando) return; api({ accion: 'listas' }, aplicarListas, function () {}); }
+  function aplicarListas(r) {
+    if (!datos) datos = {};
+    if (r.compra) datos.compra = r.compra;
+    if (r.cumples) datos.cumples = r.cumples;
+    if (r.notas) datos.notas = r.notas;
+    guardarLocal();
+    pintarCompra(); pintarCumples(); pintarAgenda(); pintarNotas();
+  }
+
+  /* ---------- pintar ---------- */
+  function pintarTodo() { pintarEstado(); pintarCompra(); pintarAgenda(); pintarNotas(); pintarCumples(); }
+  function pintarEstado(err) {
+    var t = !cfg.api ? 'Sin conectar' : (cargando ? 'Actualizando…' : (err ? err : (ultimoOk ? 'Actualizado a las ' + hm(ultimoOk) : '')));
+    $('estado').innerHTML = esc(t);
+  }
+  function personas() { return (datos && datos.eventos && datos.eventos.personas) || []; }
+  function personaPorNombre(n) { var p = personas(); for (var i = 0; i < p.length; i++) if (p[i].nombre === n) return p[i]; return null; }
+
+  /* ---------- compra por secciones ---------- */
+  var PALABRAS = {
+    'Fruta y verdura': 'fruta verdura manzana platano naranja mandarina pera uva fresa melon sandia kiwi limon lima pina melocoton nectarina ciruela cereza aguacate tomate lechuga cebolla cebolleta ajo patata zanahoria pimiento calabacin berenjena pepino espinaca acelga brocoli coliflor repollo champinon seta puerro apio calabaza ensalada perejil albahaca cilantro hierbabuena jengibre frambuesa arandano mango papaya granada higo alcachofa esparrago rucula canonigo judias verdes boniato remolacha rabano caqui chirimoya',
+    'Panadería': 'pan barra baguette chapata hogaza bolleria croissant cruasan magdalena bizcocho tostada picos colines rosquilla ensaimada empanada napolitana donut',
+    'Carne y pescado': 'carne pollo pavo ternera cerdo cordero conejo filete hamburguesa salchicha chorizo jamon lomo bacon beicon panceta costilla pechuga muslo albondiga picada solomillo chuleta embutido fiambre salami fuet mortadela longaniza morcilla pescado merluza salmon bacalao dorada lubina gamba langostino mejillon almeja calamar sepia pulpo sardina boqueron trucha rape emperador',
+    'Lácteos y huevos': 'leche yogur yogures queso mantequilla nata huevo kefir cuajada natillas flan margarina requeson batido',
+    'Despensa': 'arroz pasta macarron espagueti fideo harina azucar sal aceite vinagre legumbre lenteja garbanzo alubia atun conserva lata tomate frito salsa mayonesa ketchup mostaza cafe te infusion manzanilla cacao colacao galleta cereal avena mermelada miel chocolate especia pimienta oregano pimenton comino caldo pan rallado levadura frutos secos nuez almendra cacahuete pipas aceituna tortilla wrap sopa pure maiz guisante patatas fritas snack palomitas',
+    'Congelados': 'congelado congelada helado pizza croqueta varitas nuggets hielo lasana',
+    'Bebidas': 'agua zumo refresco cocacola coca cola fanta aquarius gaseosa tonica cerveza vino cava sidra licor bebida',
+    'Limpieza': 'lavavajillas detergente suavizante lejia friegasuelos fregasuelos limpiador limpiacristales bayeta estropajo papel de cocina servilleta bolsa de basura bolsas basura papel aluminio papel de aluminio film quitagrasas ambientador abrillantador sal lavavajillas guantes fregona recambio pato wc',
+    'Higiene y farmacia': 'papel higienico champu acondicionador gel jabon desodorante pasta de dientes dentifrico cepillo de dientes colutorio compresa tampon cuchilla maquinilla crema toallita panal algodon bastoncillo tirita paracetamol ibuprofeno colonia laca espuma de afeitar protector solar'
+  };
+  var FRASES = ['papel de cocina', 'bolsa de basura', 'papel aluminio', 'papel de aluminio', 'sal lavavajillas', 'pato wc', 'papel higienico', 'pasta de dientes',
+    'cepillo de dientes', 'espuma de afeitar', 'protector solar', 'tomate frito', 'pan rallado', 'frutos secos', 'patatas fritas', 'judias verdes', 'coca cola'];
+  var listaPalabras = null;
+  function palabras() {
+    if (listaPalabras) return listaPalabras;
+    var l = [];
+    for (var sec in PALABRAS) {
+      if (!PALABRAS.hasOwnProperty(sec)) continue;
+      var txt = PALABRAS[sec];
+      for (var f = 0; f < FRASES.length; f++) if (txt.indexOf(FRASES[f]) > -1) { l.push([FRASES[f], sec]); txt = txt.replace(FRASES[f], ' '); }
+      var ws = txt.split(/\s+/);
+      for (var w = 0; w < ws.length; w++) if (ws[w]) l.push([ws[w], sec]);
+    }
+    l.sort(function (a, b) { return b[0].length - a[0].length; });
+    listaPalabras = l;
+    return l;
+  }
+  function adivinarSeccion(texto) {
+    var aprendida = seccionesLocales[normalizar(texto)];
+    if (aprendida) return aprendida;
+    var plano = ' ' + sinTildes(texto).replace(/[^a-z0-9]+/g, ' ').replace(/^\s+|\s+$/g, '') + ' ', l = palabras();
+    for (var i = 0; i < l.length; i++) {
+      var w = l[i][0];
+      if (w.length <= 3) { if (plano.indexOf(' ' + w + ' ') > -1 || plano.indexOf(' ' + w + 's ') > -1 || plano.indexOf(' ' + w + 'es ') > -1) return l[i][1]; }
+      else if (plano.indexOf(' ' + w) > -1) return l[i][1];
+    }
+    return 'Otros';
+  }
+  function seccionesOrden() { return (datos && datos.compra && datos.compra.secciones) || SECCIONES; }
+  function pintarSecciones() {
+    var secs = seccionesOrden(), html = '';
+    for (var i = 0; i < secs.length; i++) html += '<span class="sec-chip' + (secs[i] === seccionElegida ? ' activo' : '') + '" data-seccion="' + esc(secs[i]) + '">' + esc(secs[i]) + '</span>';
+    $('secciones').innerHTML = html;
+  }
+  function pintarCompra() {
+    var items = (datos && datos.compra && datos.compra.items) || [], secs = seccionesOrden(), grupos = {}, pend = 0, hechos = 0, i;
+    for (i = 0; i < items.length; i++) {
+      if (items[i].hecho) hechos++; else pend++;
+      var s = items[i].sec || adivinarSeccion(items[i].t);
+      if (secs.indexOf(s) < 0) s = 'Otros';
+      (grupos[s] = grupos[s] || []).push(items[i]);
+    }
+    $('badge').innerHTML = pend ? String(pend) : '';
+    pintarSecciones();
+    var html = '';
+    for (var k = 0; k < secs.length; k++) {
+      var g = grupos[secs[k]];
+      if (!g) continue;
+      g.sort(function (a, b) { return ((a.hecho ? 1 : 0) - (b.hecho ? 1 : 0)) || ((a.f || 0) - (b.f || 0)); });
+      var n = 0;
+      for (i = 0; i < g.length; i++) if (!g[i].hecho) n++;
+      html += '<div class="bloque"><div class="bloque-tit">' + esc(secs[k]) + (n ? '<small>' + n + '</small>' : '') + '</div>';
+      for (i = 0; i < g.length; i++) {
+        var it = g[i];
+        html += '<div class="ci flex centro' + (it.hecho ? ' hecho' : '') + '" data-compra="' + esc(it.id) + '"><span class="caja">' + (it.hecho ? '✓' : '') + '</span><span class="ci-t uno">' + esc(it.t) + '</span>' +
+          (it.por ? '<span class="ci-por">' + esc(it.por) + '</span>' : '') + '<button class="ci-x" data-borrar="' + esc(it.id) + '">×</button></div>';
+      }
+      html += '</div>';
+    }
+    $('compra-lista').innerHTML = html || '<div class="vacio">No falta nada. Escribe arriba lo que se necesite.</div>';
+    mostrar('compra-limpiar', hechos > 0);
+    var ya = {}, sug = [], h;
+    for (i = 0; i < items.length; i++) if (!items[i].hecho) ya[normalizar(items[i].t)] = 1;
+    for (h in historial) if (historial.hasOwnProperty(h) && !ya[h]) sug.push(historial[h]);
+    sug.sort(function (a, b) { return b.n - a.n; });
+    var hs = '';
+    for (i = 0; i < Math.min(10, sug.length); i++) hs += '<span class="sug" data-sug="' + esc(sug[i].t) + '">+ ' + esc(sug[i].t) + '</span>';
+    $('sugs').innerHTML = hs;
+    mostrar('sugs', !!hs);
+  }
+  function alEscribir() {
+    if (seccionManual) return;
+    var t = $('compra-input').value.replace(/^\s+|\s+$/g, ''), s = t ? adivinarSeccion(t) : null;
+    if (s !== seccionElegida) { seccionElegida = s; pintarSecciones(); }
+  }
+  function anadir(texto, seccion) {
+    texto = String(texto || '').replace(/^\s+|\s+$/g, '');
+    if (!texto) return;
+    var k = normalizar(texto), sec = seccion || adivinarSeccion(texto);
+    if (seccion && seccion !== adivinarSeccion(texto)) { seccionesLocales[k] = seccion; lsSet('casa.secciones', seccionesLocales); }
+    historial[k] = { t: texto, n: ((historial[k] && historial[k].n) || 0) + 1 };
+    lsSet('casa.historial', historial);
+    if (!datos) datos = {};
+    if (!datos.compra) datos.compra = { items: [] };
+    var items = datos.compra.items;
+    for (var i = 0; i < items.length; i++) if (!items[i].hecho && normalizar(items[i].t) === k) { toast('Ya está en la lista'); return; }
+    items.push({ id: 'tmp' + ahoraMs(), t: texto, hecho: false, por: cfg.yo, f: ahoraMs(), sec: sec });
+    seccionElegida = null; seccionManual = false;
+    pintarCompra();
+    api({ accion: 'compra_add', texto: texto, por: cfg.yo || '', seccion: sec }, aplicarListas, function (m) { toast('No se ha guardado: ' + m); cargarListas(); });
+  }
+  function marcar(id) {
+    var items = (datos && datos.compra && datos.compra.items) || [];
+    for (var i = 0; i < items.length; i++) if (items[i].id === id) { items[i].hecho = !items[i].hecho; pintarCompra(); api({ accion: 'compra_marcar', id: id, hecho: items[i].hecho ? '1' : '0' }, aplicarListas); return; }
+  }
+  function borrar(id) {
+    var items = (datos && datos.compra && datos.compra.items) || [];
+    for (var i = 0; i < items.length; i++) if (items[i].id === id) { items.splice(i, 1); break; }
+    pintarCompra(); api({ accion: 'compra_borrar', id: id }, aplicarListas);
+  }
+
+  /* ---------- agenda ---------- */
+  function cumplesDelDia(d0) {
+    var r = [], l = (datos && datos.cumples && datos.cumples.lista) || [];
+    for (var i = 0; i < l.length; i++) if (l[i].d === d0.getDate() && l[i].m === d0.getMonth() + 1) r.push(l[i]);
+    return r;
+  }
+  function nombres(e) { var p = personas(), n = []; for (var i = 0; i < e.p.length; i++) if (p[e.p[i]]) n.push(p[e.p[i]].familia ? 'Toda la familia' : p[e.p[i]].nombre); return n.join(', '); }
+  function pintarAgenda() {
+    var ev = datos && datos.eventos, per = personas(), lista = (ev && ev.eventos) || [], hoy = new Date(), html = '', total = 0;
+    for (var n = 0; n < 7; n++) {
+      var d0 = inicioDia(hoy, n), s0 = d0.getTime(), s1 = inicioDia(hoy, n + 1).getTime(), k = ymd(d0), todos = [], horas = [], i;
+      for (i = 0; i < lista.length; i++) {
+        var e = lista[i];
+        if (e.todo) { if (e.di <= k && e.df > k) todos.push(e); }
+        else if (e.ini < s1 && e.fin > s0 && !(n === 0 && e.fin <= hoy.getTime())) horas.push(e);
+      }
+      horas.sort(function (a, b) { return a.ini - b.ini; });
+      var cumples = cumplesDelDia(d0), cuantos = todos.length + horas.length + cumples.length;
+      total += cuantos;
+      if (n > 0 && !cuantos) continue;
+      html += '<div class="dia tarjeta' + (n === 0 ? ' dia-hoy' : '') + '"><div class="dia-tit">' + (n === 0 ? 'Hoy' : n === 1 ? 'Mañana' : cap(DIAS[d0.getDay()]) + ' ' + d0.getDate()) + '</div>';
+      var chips = '';
+      for (i = 0; i < cumples.length; i++) chips += '<span class="chip" style="background:' + rgba(COLOR_CUMPLE, 0.18) + ';color:#A3285A">Cumpleaños de ' + esc(cumples[i].nombre) + (cumples[i].a ? ' (' + (d0.getFullYear() - cumples[i].a) + ')' : '') + '</span>';
+      for (i = 0; i < todos.length; i++) { var c = (per[todos[i].p[0]] || {}).color || VERDE; chips += '<span class="chip" style="background:' + rgba(c, 0.15) + ';color:' + colorTexto(c) + '">' + esc(todos[i].t) + '</span>'; }
+      if (chips) html += '<div>' + chips + '</div>';
+      for (i = 0; i < horas.length; i++) {
+        var h = horas[i], barras = '';
+        for (var j = 0; j < h.p.length; j++) barras += '<i style="background:' + ((per[h.p[j]] || {}).color || VERDE) + '"></i>';
+        html += '<div class="ev flex"><div class="ev-hora"><b>' + (h.ini < s0 ? '…' : hm(h.ini)) + '</b><span>' + (h.fin > s1 ? '…' : hm(h.fin)) + '</span></div><span class="barras">' + barras + '</span>' +
+          '<div class="uno"><div class="ev-tit">' + esc(h.t) + '</div><div class="ev-meta">' + esc(nombres(h) + (h.lugar ? ' · ' + h.lugar : '')) + '</div></div></div>';
+      }
+      if (n === 0 && !cuantos) html += '<div class="vacio">Nada más por hoy</div>';
+      html += '</div>';
+    }
+    if (!ev) html = '<div class="vacio">' + (cfg.api ? 'Cargando la agenda…' : 'Conecta el Apps Script en Ajustes.') + '</div>';
+    else if (!total) html += '<div class="vacio">Semana tranquila.</div>';
+    $('agenda').innerHTML = html;
+  }
+
+  /* ---------- tablón ---------- */
+  function hace(ms) {
+    var min = Math.round((ahoraMs() - ms) / 60000);
+    if (min < 1) return 'ahora mismo';
+    if (min < 60) return 'hace ' + min + ' min';
+    var d = new Date(ms);
+    if (ymd(d) === ymd(new Date())) return 'hoy a las ' + hm(ms);
+    if (ymd(d) === ymd(inicioDia(new Date(), -1))) return 'ayer';
+    return d.getDate() + ' de ' + MESES[d.getMonth()];
+  }
+  function pintarNotas() {
+    var l = (datos && datos.notas && datos.notas.lista) || [], html = '';
+    for (var i = 0; i < l.length; i++) {
+      var n = l[i], p = personaPorNombre(n.autor), color = p ? p.color : VERDE, conf = borrarPendiente === 'n' + n.id;
+      html += '<div class="nota flex"><div class="mini-av" style="background:' + color + ';color:' + colorSobre(color) + '">' + esc((n.autor || '?').charAt(0)) + '</div>' +
+        '<div class="uno"><div class="nota-t">' + esc(n.t) + '</div><div class="nota-m">' + esc(n.autor || 'Alguien') + ' · ' + hace(n.f) + '</div></div>' +
+        '<button class="borrar-x' + (conf ? ' confirmar' : '') + '" data-borrar-nota="' + esc(n.id) + '">' + (conf ? '¿Borrar?' : '×') + '</button></div>';
+    }
+    $('notas').innerHTML = html || '<div class="vacio">No hay mensajes.</div>';
+    $('nota-de').innerHTML = cfg.yo ? 'Lo dejas como <b>' + esc(cfg.yo) + '</b>' : 'Elige quién eres en Ajustes';
+  }
+  function publicarNota() {
+    var t = $('nota-texto').value.replace(/^\s+|\s+$/g, '');
+    if (!t) { toast('Escribe el mensaje'); return; }
+    if (!cfg.yo) { toast('Primero elige quién eres en Ajustes'); cambiar('ajustes'); return; }
+    if (!datos) datos = {};
+    if (!datos.notas) datos.notas = { lista: [] };
+    datos.notas.lista.unshift({ id: 'tmp' + ahoraMs(), t: t, autor: cfg.yo, f: ahoraMs() });
+    $('nota-texto').value = '';
+    pintarNotas();
+    api({ accion: 'nota_add', texto: t, autor: cfg.yo }, function (r) { aplicarListas(r); toast('Mensaje en el tablón'); });
+  }
+  function pulsarBorrarNota(id) {
+    if (borrarPendiente !== 'n' + id) { borrarPendiente = 'n' + id; pintarNotas(); setTimeout(function () { if (borrarPendiente === 'n' + id) { borrarPendiente = null; pintarNotas(); } }, 4000); return; }
+    borrarPendiente = null;
+    api({ accion: 'nota_borrar', id: id }, aplicarListas);
+  }
+
+  /* ---------- cumpleaños ---------- */
+  function proximo(c, hoy0) {
+    var f = new Date(hoy0.getFullYear(), c.m - 1, c.d);
+    if (f < hoy0) f = new Date(hoy0.getFullYear() + 1, c.m - 1, c.d);
+    return { fecha: f, dias: Math.round((f.getTime() - hoy0.getTime()) / 86400000) };
+  }
+  function pintarCumples() {
+    var l = ((datos && datos.cumples && datos.cumples.lista) || []).slice(0), hoy0 = inicioDia(new Date()), i, html = '';
+    for (i = 0; i < l.length; i++) l[i]._p = proximo(l[i], hoy0);
+    l.sort(function (a, b) { return a._p.dias - b._p.dias; });
+    if (!l.length) html = '<div class="vacio">Aún no hay cumpleaños.</div>';
+    for (i = 0; i < l.length; i++) {
+      var c = l[i], p = c._p, edad = c.a ? p.fecha.getFullYear() - c.a : null, conf = borrarPendiente === 'c' + c.id;
+      html += '<div class="cu flex centro' + (p.dias === 0 ? ' cu-hoy' : '') + '"><div class="cu-fecha"><b>' + c.d + '</b><span>' + MESES_C[c.m - 1] + '</span></div><div class="cu-txt uno"><b>' + esc(c.nombre) + '</b>' +
+        '<span>' + (edad ? 'Cumple ' + edad + ' · ' : '') + (p.dias === 0 ? '¡Hoy!' : p.dias === 1 ? 'Mañana' : 'En ' + p.dias + ' días') + '</span></div>' +
+        '<button class="borrar-x' + (conf ? ' confirmar' : '') + '" data-borrar-cumple="' + esc(c.id) + '">' + (conf ? '¿Borrar?' : '×') + '</button></div>';
+    }
+    $('cumples').innerHTML = html;
+  }
+  function prepararCumple() {
+    var d = '', m = '', a = '<option value="">Año</option>', i;
+    for (i = 1; i <= 31; i++) d += '<option value="' + i + '">' + i + '</option>';
+    for (i = 0; i < 12; i++) m += '<option value="' + (i + 1) + '">' + MESES[i] + '</option>';
+    for (i = new Date().getFullYear(); i >= 1920; i--) a += '<option value="' + i + '">' + i + '</option>';
+    $('cu-dia').innerHTML = d; $('cu-mes').innerHTML = m; $('cu-anio').innerHTML = a;
+    $('cu-dia').value = String(new Date().getDate()); $('cu-mes').value = String(new Date().getMonth() + 1);
+  }
+  function guardarCumple() {
+    var nombre = $('cu-nombre').value.replace(/^\s+|\s+$/g, '');
+    if (!nombre) { toast('Escribe el nombre'); return; }
+    api({ accion: 'cumple_add', nombre: nombre, dia: $('cu-dia').value, mes: $('cu-mes').value, anio: $('cu-anio').value }, function (r) { $('cu-nombre').value = ''; aplicarListas(r); toast('Cumpleaños guardado'); });
+  }
+  function pulsarBorrarCumple(id) {
+    if (borrarPendiente !== 'c' + id) { borrarPendiente = 'c' + id; pintarCumples(); setTimeout(function () { if (borrarPendiente === 'c' + id) { borrarPendiente = null; pintarCumples(); } }, 4000); return; }
+    borrarPendiente = null;
+    api({ accion: 'cumple_borrar', id: id }, aplicarListas);
+  }
+
+  /* ---------- vistas ---------- */
+  function cambiar(v) {
+    vista = v;
+    var vs = ['compra', 'agenda', 'tablon', 'cumples', 'ajustes'];
+    for (var i = 0; i < vs.length; i++) mostrar('v-' + vs[i], vs[i] === v);
+    var bs = document.querySelectorAll('nav button');
+    for (var j = 0; j < bs.length; j++) { if (bs[j].getAttribute('data-v') === v) bs[j].classList.add('activa'); else bs[j].classList.remove('activa'); }
+    $('titulo').innerHTML = TITULOS[v];
+    if (v === 'ajustes') abrirAjustes();
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- evento nuevo ---------- */
+  function pintarElegir() {
+    var per = personas(), html = '';
+    for (var i = 0; i < per.length; i++) {
+      if (per[i].sel === false) continue;
+      var act = evPersonas.indexOf(per[i].nombre) > -1, nombre = per[i].familia ? 'Toda la familia' : per[i].nombre;
+      html += '<span class="elige" data-para="' + esc(per[i].nombre) + '" style="' + (act ? 'border-color:' + per[i].color + ';background:' + rgba(per[i].color, 0.15) + ';color:' + colorTexto(per[i].color) : '') + '"><i class="punto" style="background:' + per[i].color + '"></i>' + esc(nombre) + '</span>';
+    }
+    $('ev-personas').innerHTML = html;
+  }
+  function elegirPara(n) {
+    var p = personaPorNombre(n);
+    if (!p) return;
+    if (p.familia) evPersonas = evPersonas[0] === n ? [] : [n];
+    else {
+      var sel = [];
+      for (var i = 0; i < evPersonas.length; i++) { var q = personaPorNombre(evPersonas[i]); if (q && !q.familia) sel.push(evPersonas[i]); }
+      var k = sel.indexOf(n);
+      if (k > -1) sel.splice(k, 1); else sel.push(n);
+      evPersonas = sel;
+    }
+    pintarElegir();
+  }
+  function abrirEvento() {
+    evPersonas = cfg.yo ? [cfg.yo] : [];
+    pintarElegir();
+    if (!$('ev-fecha').value) $('ev-fecha').value = ymd(new Date());
+    if (!$('ev-hi').value) { var h = Math.min(22, new Date().getHours() + 1); $('ev-hi').value = pad(h) + ':00'; $('ev-hf').value = pad(h + 1) + ':00'; }
+    $('ev-error').innerHTML = '';
+    mostrar('hoja-evento', true);
+  }
+  function guardarEvento() {
+    var titulo = $('ev-titulo').value.replace(/^\s+|\s+$/g, '');
+    if (!titulo) { $('ev-error').innerHTML = 'Escribe qué es'; return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test($('ev-fecha').value)) { $('ev-error').innerHTML = 'Elige la fecha'; return; }
+    if (!evPersonas.length) { $('ev-error').innerHTML = 'Elige para quién es'; return; }
+    $('ev-guardar').disabled = true;
+    api({ accion: 'evento_add', titulo: titulo, fecha: $('ev-fecha').value, todo: $('ev-todo').checked ? '1' : '0', hi: $('ev-hi').value || '09:00', hf: $('ev-hf').value || '', persona: evPersonas.join(','), lugar: $('ev-lugar').value },
+      function () { $('ev-guardar').disabled = false; mostrar('hoja-evento', false); $('ev-titulo').value = ''; $('ev-lugar').value = ''; toast('Guardado en el calendario de casa'); cargar(); },
+      function (m) { $('ev-guardar').disabled = false; $('ev-error').innerHTML = 'No se ha podido guardar: ' + esc(m); });
+  }
+
+  /* ---------- ajustes y avisos nativos ---------- */
+  function abrirAjustes() {
+    $('aj-api').value = cfg.api;
+    pintarAjustesDatos(cfg.yo || '');
+  }
+  function pintarAjustesDatos(elegido) {
+    var per = personas(), op = '<option value="">—</option>';
+    for (var i = 0; i < per.length; i++) if (per[i].persona) op += '<option value="' + esc(per[i].nombre) + '">' + esc(per[i].nombre) + '</option>';
+    $('aj-yo').innerHTML = op; $('aj-yo').value = elegido;
+    $('aj-info').innerHTML = ultimoOk ? 'Conectado. Calendario de casa: ' + esc((datos && datos.casa && datos.casa.id) || '—') + (cfg.yo ? '' : '. Ahora elige quién eres y pulsa Guardar.') : (cfg.api ? '' : 'Pega aquí la URL que te dio Apps Script al implementarlo.');
+    if (nativo) pintarNativo();
+  }
+  function estadoNativo() { try { return JSON.parse(nativo.estado()); } catch (e) { return null; } }
+  function pintarNativo() {
+    var st = estadoNativo();
+    mostrar('nativo', !!st);
+    if (!st) return;
+    $('na-activo').checked = !!st.activo;
+    $('na-cuenta').value = st.cuentaCasa || '';
+    $('na-modo').value = st.modo || 'invitar';
+    $('na-permisos').innerHTML = (st.permisoCalendario ? '<span class="ok">✓ Acceso al calendario</span>' : '<span class="mal">✗ Falta permiso del calendario</span>') + ' · ' +
+      (st.permisoNotificaciones ? '<span class="ok">✓ Notificaciones</span>' : '<span class="mal">✗ Faltan notificaciones</span>') +
+      ((!st.permisoCalendario || !st.permisoNotificaciones) ? ' <button class="boton peq" id="na-permitir">Dar permisos</button>' : '');
+    var html = '', vig = st.vigilar || [], cals = st.calendarios || [];
+    if (!cals.length) html = '<div class="ayuda">' + (st.permisoCalendario ? 'No hay calendarios en este móvil.' : 'Da permiso al calendario para verlos.') + '</div>';
+    for (var i = 0; i < cals.length; i++) {
+      var c = cals[i], esCasa = st.cuentaCasa && c.dueno && c.dueno.toLowerCase() === st.cuentaCasa.toLowerCase();
+      var marcado = vig.length ? vig.indexOf(String(c.id)) > -1 : (c.propio && !esCasa);
+      html += '<label class="cal-op flex centro"><input type="checkbox" data-cal="' + c.id + '"' + (marcado ? ' checked' : '') + (esCasa ? ' disabled' : '') + '>' +
+        '<span class="uno"><i class="punto" style="background:' + esc(c.color || '#888') + '"></i>' + esc(c.nombre) + (esCasa ? ' (casa)' : '') + '<small>' + esc(c.cuenta) + '</small></span></label>';
+    }
+    $('na-calendarios').innerHTML = html;
+  }
+  function guardarNativo() {
+    var cbs = $('na-calendarios').querySelectorAll('input[data-cal]'), vig = [];
+    for (var i = 0; i < cbs.length; i++) if (cbs[i].checked && !cbs[i].disabled) vig.push(cbs[i].getAttribute('data-cal'));
+    var conf = { activo: $('na-activo').checked, cuentaCasa: $('na-cuenta').value.replace(/\s+/g, ''), modo: $('na-modo').value, vigilar: vig };
+    if (conf.activo && !conf.cuentaCasa) { toast('Falta la cuenta de casa'); return; }
+    nativo.configurar(JSON.stringify(conf));
+    toast(conf.activo ? 'Avisos activados' : 'Avisos desactivados');
+    pintarNativo();
+  }
+  function autoconfigurarNativo() {
+    if (!nativo || !datos || !datos.casa) return;
+    var st = estadoNativo();
+    if (st && !st.cuentaCasa) nativo.configurar(JSON.stringify({ activo: st.activo, cuentaCasa: datos.casa.id, modo: st.modo || 'invitar', vigilar: st.vigilar || [] }));
+  }
+  window.onNativo = function () { if (vista === 'ajustes') pintarNativo(); };
+
+  /* ---------- arranque ---------- */
+  function al(id, fn) { $(id).addEventListener('click', fn); }
+  function buscar(el, a) { while (el && el !== document) { if (el.getAttribute && el.getAttribute(a) !== null) return el.getAttribute(a); el = el.parentNode; } return null; }
+  document.addEventListener('click', function (e) {
+    var t = e.target, v;
+    if ((v = buscar(t, 'data-v'))) { cambiar(v); return; }
+    if ((v = buscar(t, 'data-cerrar'))) { mostrar(v, false); return; }
+    if ((v = buscar(t, 'data-borrar'))) { borrar(v); return; }
+    if ((v = buscar(t, 'data-compra'))) { marcar(v); return; }
+    if ((v = buscar(t, 'data-sug'))) { anadir(v, null); return; }
+    if ((v = buscar(t, 'data-seccion'))) {
+      if (seccionElegida === v && seccionManual) { seccionManual = false; alEscribir(); } else { seccionElegida = v; seccionManual = true; pintarSecciones(); }
+      return;
+    }
+    if ((v = buscar(t, 'data-borrar-nota'))) { pulsarBorrarNota(v); return; }
+    if ((v = buscar(t, 'data-borrar-cumple'))) { pulsarBorrarCumple(v); return; }
+    if ((v = buscar(t, 'data-para'))) { elegirPara(v); return; }
+    if (t.id === 'na-permitir') { nativo.pedirPermisos(); return; }
+  });
+  $('hoja-evento').addEventListener('click', function (e) { if (e.target === $('hoja-evento')) mostrar('hoja-evento', false); });
+  al('compra-btn', function () { anadir($('compra-input').value, seccionManual ? seccionElegida : null); $('compra-input').value = ''; });
+  $('compra-input').addEventListener('keydown', function (e) { if (e.keyCode === 13) { anadir($('compra-input').value, seccionManual ? seccionElegida : null); $('compra-input').value = ''; } });
+  $('compra-input').addEventListener('input', alEscribir);
+  al('compra-limpiar', function () {
+    var items = (datos && datos.compra && datos.compra.items) || [];
+    for (var i = items.length - 1; i >= 0; i--) if (items[i].hecho) items.splice(i, 1);
+    pintarCompra(); api({ accion: 'compra_limpiar' }, aplicarListas);
+  });
+  al('btn-evento', abrirEvento);
+  al('ev-guardar', guardarEvento);
+  $('ev-todo').addEventListener('change', function () { mostrar('ev-horas', !$('ev-todo').checked); });
+  al('nota-guardar', publicarNota);
+  al('cu-guardar', guardarCumple);
+  al('aj-guardar', function () {
+    var a = $('aj-api').value.replace(/\s+/g, '');
+    if (a && !/^https:\/\//.test(a)) { toast('La URL tiene que empezar por https://'); return; }
+    cfg.api = a; cfg.yo = $('aj-yo').value; lsSet('casa.cfg', cfg); toast('Guardado'); pintarNotas(); cargar();
+  });
+  al('na-guardar', guardarNativo);
+  al('na-probar', function () { nativo.probarAviso(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) cargar(); });
+  prepararCumple();
+  pintarTodo();
+  cargar();
+  setInterval(function () { if (!document.hidden) cargarListas(); }, 60000);
+})();
+</script>
+</body>
+</html>
