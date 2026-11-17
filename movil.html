@@ -32,6 +32,9 @@ button { cursor: pointer; }
 header { position: sticky; top: 0; z-index: 5; background: #EEF4EF; padding: calc(env(safe-area-inset-top) + 14px) 18px 10px; }
 header h1 { margin: 0; font-family: Lexend, 'Nunito Sans', sans-serif; font-size: 1.7rem; font-weight: 600; }
 #estado { font-size: .78rem; color: #8A988F; margin-top: 2px; font-weight: 600; }
+.engranaje { background: #FFFFFF; border: 1px solid #DCE7DE; border-radius: 50%; width: 44px; height: 44px; color: #4C5E53; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.engranaje svg { width: 22px; height: 22px; }
+.engranaje.activa { background: #1F5C3F; border-color: #1F5C3F; color: #FFFFFF; }
 main { padding: 4px 16px calc(env(safe-area-inset-bottom) + 96px); }
 nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: #FFFFFF; border-top: 1px solid #DCE7DE; padding: 6px 4px calc(env(safe-area-inset-bottom) + 6px); }
 nav button { flex: 1; background: none; border: 0; color: #6A7A70; font-size: .74rem; font-weight: 700; padding: 6px 0 4px; position: relative; }
@@ -84,6 +87,16 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
 .chip { display: inline-block; padding: 4px 11px; border-radius: 14px; font-size: .88rem; font-weight: 700; margin: 0 6px 6px 0; }
 .fab { position: fixed; right: 18px; bottom: calc(env(safe-area-inset-bottom) + 86px); z-index: 5; background: #1F5C3F; color: #FFFFFF; border: 0; border-radius: 28px; padding: 15px 22px; font-weight: 800; font-size: 1rem; box-shadow: 0 6px 18px rgba(31,92,63,.35); }
 
+/* horarios */
+.hp-cab { margin-bottom: 4px; }
+.hp-cab h2 { margin: 0; font-size: 1.15rem; }
+.hor-item { padding: 10px 0; border-top: 1px solid #E8EFE9; align-items: center; }
+.hor-item:first-of-type { border-top: 0; }
+.hor-dias { font-size: .82rem; font-weight: 800; margin-top: 2px; }
+.chev { color: #B8C4BC; font-size: 1.6rem; padding-left: 10px; }
+.hoy-badge { display: inline-block; font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; background: #1F5C3F; color: #FFFFFF; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+.dia-chip { min-width: 52px; text-align: center; padding-left: 8px; padding-right: 8px; }
+
 /* tablón */
 .nota { padding: 12px 0; border-top: 1px solid #E8EFE9; align-items: flex-start; }
 .nota:first-child { border-top: 0; }
@@ -122,7 +135,7 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
 </style>
 </head>
 <body>
-<header><h1 id="titulo">Compra</h1><div id="estado"></div></header>
+<header class="flex centro"><div class="uno"><h1 id="titulo">Compra</h1><div id="estado"></div></div><button class="engranaje" id="btn-ajustes" data-v="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2.2" fill="#FFFFFF"/><circle cx="15" cy="12" r="2.2" fill="#FFFFFF"/><circle cx="8" cy="18" r="2.2" fill="#FFFFFF"/></svg></button></header>
 
 <main>
   <section id="v-compra">
@@ -139,6 +152,12 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
   <section id="v-agenda" class="oculto">
     <div id="agenda"></div>
     <button class="fab" id="btn-evento">+ Evento</button>
+  </section>
+
+  <section id="v-horarios" class="oculto">
+    <p class="ayuda" style="margin:0 2px 12px">Lo que se repite cada semana. No va al calendario de nadie: sale en la tablet y aquí. Cualquiera puede apuntar los de cualquiera.</p>
+    <div id="horarios"></div>
+    <button class="fab" id="btn-horario">+ Horario</button>
   </section>
 
   <section id="v-tablon" class="oculto">
@@ -193,9 +212,9 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
 <nav class="flex">
   <button data-v="compra" class="activa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>Compra<b id="badge"></b></button>
   <button data-v="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Agenda</button>
+  <button data-v="horarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Horarios</button>
   <button data-v="tablon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M15 20v-5h5M8 9h8M8 13h5"/></svg>Tablón</button>
   <button data-v="cumples"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16v-7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7z"/><path d="M4 15c2 1.5 4 1.5 5.3 0s3.4-1.5 5.4 0 3.3 1.5 5.3 0M12 11V7"/><path d="M12 3.5c.9 1 .9 2 0 2.6-.9-.6-.9-1.6 0-2.6z"/></svg>Cumples</button>
-  <button data-v="ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2.2" fill="#FFFFFF"/><circle cx="15" cy="12" r="2.2" fill="#FFFFFF"/><circle cx="8" cy="18" r="2.2" fill="#FFFFFF"/></svg>Ajustes</button>
 </nav>
 
 <div id="hoja-evento" class="hoja oculto">
@@ -216,6 +235,25 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
   </div>
 </div>
 
+<div id="hoja-horario" class="hoja oculto">
+  <div class="hoja-caja">
+    <div class="flex centro"><h3 class="uno" id="ho-cab">Nuevo horario</h3><button class="boton peq" data-cerrar="hoja-horario">Cancelar</button></div>
+    <label class="campo-et" for="ho-titulo">Qué</label>
+    <input type="text" id="ho-titulo" class="campo" maxlength="80" autocomplete="off" placeholder="Instituto, entrenamiento, clase de inglés…">
+    <label class="campo-et">Para quién</label>
+    <div id="ho-personas"></div>
+    <label class="campo-et">Qué días</label>
+    <div id="ho-dias"></div>
+    <div class="fila-hora flex centro" style="margin-top:6px">De&nbsp;<input type="time" id="ho-hi" class="campo" step="900">&nbsp;a&nbsp;<input type="time" id="ho-hf" class="campo" step="900"></div>
+    <p class="ayuda" style="margin:4px 0 0">La hora de fin es opcional.</p>
+    <label class="campo-et" for="ho-lugar">Dónde (opcional)</label>
+    <input type="text" id="ho-lugar" class="campo" maxlength="80" autocomplete="off">
+    <div style="margin-top:16px"><button class="boton prim" id="ho-guardar" style="width:100%">Guardar</button></div>
+    <div style="margin-top:10px"><button class="boton" id="ho-borrar" style="width:100%">Borrar este horario</button></div>
+    <p id="ho-error" class="ayuda mal"></p>
+  </div>
+</div>
+
 <div id="toast" class="oculto"><span id="toast-txt"></span></div>
 
 <script>
@@ -227,7 +265,8 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
   var MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   var SECCIONES = ['Fruta y verdura', 'Panadería', 'Carne y pescado', 'Lácteos y huevos', 'Despensa', 'Congelados', 'Bebidas', 'Limpieza', 'Higiene y farmacia', 'Otros'];
   var COLOR_CUMPLE = '#F27BA6', VERDE = '#1F5C3F';
-  var TITULOS = { compra: 'Compra', agenda: 'Agenda de casa', tablon: 'Tablón', cumples: 'Cumpleaños', ajustes: 'Ajustes' };
+  var TITULOS = { compra: 'Compra', agenda: 'Agenda de casa', horarios: 'Horarios', tablon: 'Tablón', cumples: 'Cumpleaños', ajustes: 'Ajustes' };
+  var DIAS_SEM = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];   // 1 = lunes … 7 = domingo
 
   function $(id) { return document.getElementById(id); }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -264,6 +303,7 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
   var seccionesLocales = lsGet('casa.secciones', {});
   var vista = 'compra', ultimoOk = lsGet('casa.ultimoOk', 0), cargando = false, borrarPendiente = null;
   var seccionElegida = null, seccionManual = false, evPersonas = [];
+  var hoEdit = { id: null, personas: [], dias: [], borrar: false };
 
   (function () {
     var href = location.href, i = href.indexOf('api=');
@@ -292,7 +332,7 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
     for (var k in params) if (params.hasOwnProperty(k)) q.push(k + '=' + encodeURIComponent(params[k]));
     jsonp(cfg.api + (cfg.api.indexOf('?') < 0 ? '?' : '&') + q.join('&'), function (r) { if (r && r.ok) ok(r); else ko((r && r.error) || 'Error'); }, ko);
   }
-  function guardarLocal() { lsSet('casa.datos', { eventos: datos.eventos, compra: datos.compra, cumples: datos.cumples, notas: datos.notas, casa: datos.casa }); }
+  function guardarLocal() { lsSet('casa.datos', { eventos: datos.eventos, compra: datos.compra, cumples: datos.cumples, notas: datos.notas, horarios: datos.horarios, casa: datos.casa }); }
   function cargar() {
     if (!cfg.api) { pintarTodo(); cambiar('ajustes'); return; }
     if (cargando) return;
@@ -310,12 +350,13 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
     if (r.compra) datos.compra = r.compra;
     if (r.cumples) datos.cumples = r.cumples;
     if (r.notas) datos.notas = r.notas;
+    if (r.horarios) datos.horarios = r.horarios;
     guardarLocal();
-    pintarCompra(); pintarCumples(); pintarAgenda(); pintarNotas();
+    pintarCompra(); pintarCumples(); pintarAgenda(); pintarNotas(); pintarHorarios();
   }
 
   /* ---------- pintar ---------- */
-  function pintarTodo() { pintarEstado(); pintarCompra(); pintarAgenda(); pintarNotas(); pintarCumples(); }
+  function pintarTodo() { pintarEstado(); pintarCompra(); pintarAgenda(); pintarHorarios(); pintarNotas(); pintarCumples(); }
   function pintarEstado(err) {
     var t = !cfg.api ? 'Sin conectar' : (cargando ? 'Actualizando…' : (err ? err : (ultimoOk ? 'Actualizado a las ' + hm(ultimoOk) : '')));
     $('estado').innerHTML = esc(t);
@@ -475,6 +516,121 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
     $('agenda').innerHTML = html;
   }
 
+  /* ---------- horarios ---------- */
+  function listaHorarios() { return (datos && datos.horarios && datos.horarios.lista) || []; }
+  function diaIso(d) { var n = d.getDay(); return n === 0 ? 7 : n; }
+  function textoDias(dias) {
+    var k = (dias || []).join(',');
+    if (k === '1,2,3,4,5,6,7') return 'Todos los días';
+    if (k === '1,2,3,4,5') return 'De lunes a viernes';
+    if (k === '6,7') return 'Fines de semana';
+    var r = [];
+    for (var i = 0; i < dias.length; i++) r.push(DIAS_SEM[dias[i] - 1]);
+    return r.join(', ');
+  }
+  function pintarHorarios() {
+    var per = personas(), l = listaHorarios(), hoy = diaIso(new Date()), html = '', i, j;
+    var filas = [];
+    for (i = 0; i < per.length; i++) if (per[i].persona || per[i].familia) filas.push(per[i]);
+    for (i = 0; i < filas.length; i++) {
+      var f = filas[i], c = f.color || VERDE, suyos = [];
+      for (j = 0; j < l.length; j++) if ((l[j].per || []).indexOf(f.nombre) > -1) suyos.push(l[j]);
+      if (!suyos.length && f.familia) continue;
+      suyos.sort(function (a, b) { return ((a.dias[0] || 9) - (b.dias[0] || 9)) || (a.hi < b.hi ? -1 : a.hi > b.hi ? 1 : 0); });
+      html += '<div class="tarjeta"><div class="hp-cab flex centro"><div class="mini-av" style="background:' + c + ';color:' + colorSobre(c) + '">' + esc(f.familia ? '★' : f.nombre.charAt(0)) + '</div>' +
+        '<h2 style="color:' + colorTexto(c) + '">' + esc(f.familia ? 'Toda la familia' : f.nombre) + '</h2></div>';
+      if (!suyos.length) html += '<div class="vacio" style="padding:6px 2px">Nada fijo apuntado.</div>';
+      for (j = 0; j < suyos.length; j++) {
+        var h = suyos[j], otros = [];
+        for (var k = 0; k < h.per.length; k++) if (h.per[k] !== f.nombre) otros.push(h.per[k]);
+        var meta = h.hi + (h.hf ? '–' + h.hf : '') + (h.lugar ? ' · ' + h.lugar : '') + (otros.length ? ' · con ' + otros.join(' y ') : '');
+        html += '<div class="hor-item flex" data-horario="' + esc(h.id) + '"><div class="uno"><div class="ev-tit">' + esc(h.t) + (h.dias.indexOf(hoy) > -1 ? '<span class="hoy-badge">Hoy</span>' : '') + '</div>' +
+          '<div class="hor-dias" style="color:' + colorTexto(c) + '">' + esc(textoDias(h.dias)) + '</div><div class="ev-meta">' + esc(meta) + '</div></div><span class="chev">›</span></div>';
+      }
+      html += '</div>';
+    }
+    if (!filas.length) html = '<div class="vacio">' + (cfg.api ? 'Cargando…' : 'Conecta el Apps Script en Ajustes.') + '</div>';
+    $('horarios').innerHTML = html;
+  }
+  function abrirHorario(id) {
+    var h = null, l = listaHorarios();
+    for (var i = 0; i < l.length; i++) if (l[i].id === id) h = l[i];
+    hoEdit = { id: h ? h.id : null, personas: h ? (h.per || []).slice(0) : [], dias: h ? (h.dias || []).slice(0) : [], borrar: false };
+    $('ho-cab').innerHTML = h ? 'Cambiar horario' : 'Nuevo horario';
+    $('ho-titulo').value = h ? h.t : ''; $('ho-lugar').value = h ? (h.lugar || '') : '';
+    $('ho-hi').value = h ? h.hi : '16:00'; $('ho-hf').value = h ? (h.hf || '') : '17:00';
+    $('ho-borrar').innerHTML = 'Borrar este horario'; $('ho-borrar').className = 'boton'; mostrar('ho-borrar', !!h);
+    $('ho-error').innerHTML = '';
+    pintarHoPersonas(); pintarHoDias();
+    mostrar('hoja-horario', true);
+  }
+  function pintarHoPersonas() {
+    var per = personas(), html = '';
+    for (var i = 0; i < per.length; i++) {
+      if (!per[i].persona && !per[i].familia) continue;
+      var act = hoEdit.personas.indexOf(per[i].nombre) > -1, nombre = per[i].familia ? 'Toda la familia' : per[i].nombre;
+      html += '<span class="elige" data-ho-para="' + esc(per[i].nombre) + '" style="' + (act ? 'border-color:' + per[i].color + ';background:' + rgba(per[i].color, 0.15) + ';color:' + colorTexto(per[i].color) : '') + '"><i class="punto" style="background:' + per[i].color + '"></i>' + esc(nombre) + '</span>';
+    }
+    $('ho-personas').innerHTML = html;
+  }
+  function elegirHoPara(n) {
+    var p = personaPorNombre(n);
+    if (!p) return;
+    if (p.familia) hoEdit.personas = hoEdit.personas[0] === n ? [] : [n];
+    else {
+      var sel = [];
+      for (var i = 0; i < hoEdit.personas.length; i++) { var q = personaPorNombre(hoEdit.personas[i]); if (q && !q.familia) sel.push(hoEdit.personas[i]); }
+      var k = sel.indexOf(n);
+      if (k > -1) sel.splice(k, 1); else sel.push(n);
+      hoEdit.personas = sel;
+    }
+    pintarHoPersonas();
+  }
+  function pintarHoDias() {
+    var html = '', d, lv = true;
+    for (d = 1; d <= 5; d++) if (hoEdit.dias.indexOf(d) < 0) lv = false;
+    for (d = 1; d <= 7; d++) {
+      var act = hoEdit.dias.indexOf(d) > -1;
+      html += '<span class="elige dia-chip" data-ho-dia="' + d + '"' + (act ? ' style="border-color:#1F5C3F;background:#1F5C3F;color:#FFFFFF"' : '') + '>' + DIAS_SEM[d - 1] + '</span>';
+    }
+    html += '<span class="elige" data-ho-dia="lv" style="border-style:dashed' + (lv ? ';border-color:#1F5C3F;color:#1F5C3F' : '') + '">Lunes a viernes</span>';
+    $('ho-dias').innerHTML = html;
+  }
+  function elegirHoDia(v) {
+    var d, i;
+    if (v === 'lv') {
+      var todos = true;
+      for (d = 1; d <= 5; d++) if (hoEdit.dias.indexOf(d) < 0) todos = false;
+      for (d = 1; d <= 5; d++) { i = hoEdit.dias.indexOf(d); if (todos && i > -1) hoEdit.dias.splice(i, 1); if (!todos && i < 0) hoEdit.dias.push(d); }
+    } else {
+      d = parseInt(v, 10); i = hoEdit.dias.indexOf(d);
+      if (i > -1) hoEdit.dias.splice(i, 1); else hoEdit.dias.push(d);
+    }
+    hoEdit.dias.sort(function (a, b) { return a - b; });
+    pintarHoDias();
+  }
+  function guardarHorario() {
+    var titulo = $('ho-titulo').value.replace(/^\s+|\s+$/g, ''), hi = $('ho-hi').value, hf = $('ho-hf').value;
+    if (!titulo) { $('ho-error').innerHTML = 'Escribe qué es'; return; }
+    if (!hoEdit.personas.length) { $('ho-error').innerHTML = 'Elige para quién es'; return; }
+    if (!hoEdit.dias.length) { $('ho-error').innerHTML = 'Elige qué días'; return; }
+    if (!/^\d{2}:\d{2}/.test(hi)) { $('ho-error').innerHTML = 'Pon la hora de inicio'; return; }
+    if (hf && hf <= hi) { $('ho-error').innerHTML = 'La hora de fin tiene que ser después de la de inicio'; return; }
+    var params = { accion: hoEdit.id ? 'horario_editar' : 'horario_add', titulo: titulo, persona: hoEdit.personas.join(','), dias: hoEdit.dias.join(','),
+      hi: hi.substr(0, 5), hf: hf ? hf.substr(0, 5) : '', lugar: $('ho-lugar').value, por: cfg.yo || '' };
+    if (hoEdit.id) params.id = hoEdit.id;
+    var editando = !!hoEdit.id;
+    $('ho-guardar').disabled = true; $('ho-error').innerHTML = '';
+    api(params, function (r) { $('ho-guardar').disabled = false; mostrar('hoja-horario', false); aplicarListas(r); toast(editando ? 'Horario cambiado' : 'Horario guardado'); },
+      function (m) { $('ho-guardar').disabled = false; $('ho-error').innerHTML = 'No se ha podido guardar: ' + esc(m); });
+  }
+  function borrarHorario() {
+    if (!hoEdit.id) return;
+    if (!hoEdit.borrar) { hoEdit.borrar = true; $('ho-borrar').innerHTML = '¿Seguro? Toca otra vez para borrar'; $('ho-borrar').className = 'boton borrar-x confirmar'; return; }
+    api({ accion: 'horario_borrar', id: hoEdit.id }, function (r) { mostrar('hoja-horario', false); aplicarListas(r); toast('Horario borrado'); },
+      function (m) { $('ho-error').innerHTML = 'No se ha podido borrar: ' + esc(m); });
+  }
+
   /* ---------- tablón ---------- */
   function hace(ms) {
     var min = Math.round((ahoraMs() - ms) / 60000);
@@ -554,11 +710,12 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
   /* ---------- vistas ---------- */
   function cambiar(v) {
     vista = v;
-    var vs = ['compra', 'agenda', 'tablon', 'cumples', 'ajustes'];
+    var vs = ['compra', 'agenda', 'horarios', 'tablon', 'cumples', 'ajustes'];
     for (var i = 0; i < vs.length; i++) mostrar('v-' + vs[i], vs[i] === v);
     var bs = document.querySelectorAll('nav button');
     for (var j = 0; j < bs.length; j++) { if (bs[j].getAttribute('data-v') === v) bs[j].classList.add('activa'); else bs[j].classList.remove('activa'); }
     $('titulo').innerHTML = TITULOS[v];
+    if (v === 'ajustes') $('btn-ajustes').classList.add('activa'); else $('btn-ajustes').classList.remove('activa');
     if (v === 'ajustes') abrirAjustes();
     window.scrollTo(0, 0);
   }
@@ -671,9 +828,20 @@ label.campo-et { display: block; font-size: .85rem; color: #5A6A60; font-weight:
     if ((v = buscar(t, 'data-borrar-nota'))) { pulsarBorrarNota(v); return; }
     if ((v = buscar(t, 'data-borrar-cumple'))) { pulsarBorrarCumple(v); return; }
     if ((v = buscar(t, 'data-para'))) { elegirPara(v); return; }
+    if ((v = buscar(t, 'data-ho-para'))) { elegirHoPara(v); return; }
+    if ((v = buscar(t, 'data-ho-dia'))) { elegirHoDia(v); return; }
+    if ((v = buscar(t, 'data-horario'))) { abrirHorario(v); return; }
     if (t.id === 'na-permitir') { nativo.pedirPermisos(); return; }
   });
   $('hoja-evento').addEventListener('click', function (e) { if (e.target === $('hoja-evento')) mostrar('hoja-evento', false); });
+  $('hoja-horario').addEventListener('click', function (e) { if (e.target === $('hoja-horario')) mostrar('hoja-horario', false); });
+  al('btn-horario', function () { abrirHorario(null); });
+  al('ho-guardar', guardarHorario);
+  $('ho-hi').addEventListener('change', function () {
+    var hi = $('ho-hi').value, hf = $('ho-hf').value, m = /^(\d{2}):(\d{2})/.exec(hi);
+    if (m && hf && hf <= hi) { var t = Math.min(23 * 60 + 45, +m[1] * 60 + +m[2] + 60); $('ho-hf').value = pad(Math.floor(t / 60)) + ':' + pad(t % 60); }
+  });
+  al('ho-borrar', borrarHorario);
   al('compra-btn', function () { anadir($('compra-input').value, seccionManual ? seccionElegida : null); $('compra-input').value = ''; });
   $('compra-input').addEventListener('keydown', function (e) { if (e.keyCode === 13) { anadir($('compra-input').value, seccionManual ? seccionElegida : null); $('compra-input').value = ''; } });
   $('compra-input').addEventListener('input', alEscribir);

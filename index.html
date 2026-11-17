@@ -231,6 +231,20 @@ button { cursor: pointer; }
 .ev-meta { font-size: .88rem; color: #5A6A60; }
 .chip { display: inline-block; padding: .25rem .7rem; border-radius: 1rem; font-size: .92rem; font-weight: 700; margin: 0 .35rem .4rem 0; }
 
+/* Vista Horario */
+.hor { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.hor th { font-size: .8rem; font-weight: 800; letter-spacing: .08rem; text-transform: uppercase; color: #5A6A60; padding: .1rem .3rem .55rem; text-align: left; }
+.hor th.hoy span { background: #1F5C3F; color: #FFFFFF; border-radius: .6rem; padding: .12rem .55rem; }
+.hor td { vertical-align: top; padding: .45rem .3rem .2rem; border-top: 1px solid #E8EFE9; }
+.hor td.hoy { background: #F3F8F4; }
+.hor-nombre { font-family: Lexend, "Nunito Sans", sans-serif; font-size: 1.12rem; font-weight: 600; padding-top: .15rem; }
+.hor-nombre span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hor-nombre .avatar { width: 2.1rem; height: 2.1rem; font-size: 1rem; margin-right: .55rem; }
+.hi { border-left: 3px solid #9FB1A5; border-radius: .45rem; padding: .28rem .45rem; margin-bottom: .35rem; cursor: pointer; overflow: hidden; }
+.hi b { display: block; font-size: .78rem; font-weight: 800; white-space: nowrap; overflow: hidden; }
+.hi span { display: block; font-size: .92rem; font-weight: 700; line-height: 1.2; overflow: hidden; max-height: 2.4em; }
+.ico-rep { width: .95rem; height: .95rem; vertical-align: middle; margin-left: .35rem; color: #8A988F; position: relative; top: -.08rem; }
+
 /* Asa para volver a Inicio */
 #asa { position: absolute; left: 0; right: 0; bottom: 0; height: 2.4rem; text-align: center; padding-top: .55rem; color: #8A988F; font-size: .75rem; font-weight: 700; pointer-events: none; }
 #asa i { display: block; width: 7.5rem; height: .4rem; border-radius: .2rem; background: #B8C8BC; margin: 0 auto .3rem; }
@@ -292,6 +306,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     <button class="pest" data-vista="gasolina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15"/><path d="M3 20h12"/><path d="M6.5 8h5"/><path d="M14 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/></svg>Gasolina</button>
     <button class="pest" data-vista="compra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>Compra<b id="badge-compra"></b></button>
     <button class="pest" data-vista="calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Calendario</button>
+    <button class="pest" data-vista="horario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Horario</button>
     <div class="uno"></div>
     <button class="boton-icono flex centro" id="btn-ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2.2" fill="#FFFFFF"/><circle cx="15" cy="12" r="2.2" fill="#FFFFFF"/><circle cx="8" cy="18" r="2.2" fill="#FFFFFF"/></svg></button>
   </nav>
@@ -371,6 +386,14 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
       </div>
     </section>
 
+    <section id="vista-horario" class="vista flex col uno con-asa oculto">
+      <div class="barra-vista flex centro"><h1>Horario de la semana</h1><button class="boton prim" id="btn-nuevo-horario" style="margin-left:1.2rem">+ Añadir</button><span class="mini-hora"></span></div>
+      <section class="tarjeta flex col uno">
+        <div id="horario-tabla" class="uno desplazable"></div>
+        <div class="pie-tarjeta">Los compromisos que se repiten cada semana. No van al calendario de nadie: salen aquí, en las columnas de Inicio y en la app del móvil. Toca uno para cambiarlo o borrarlo.</div>
+      </section>
+    </section>
+
     <div id="asa" class="oculto"><i></i>Desliza hacia arriba desde aquí para volver al inicio</div>
   </div>
 </div>
@@ -394,6 +417,23 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     <input type="text" id="ev-lugar" class="campo" maxlength="120" autocomplete="off">
     <div class="botones"><button class="boton prim grande" id="ev-guardar">Guardar en el calendario</button></div>
     <div id="ev-error" class="ayuda" style="color:#C0392B"></div>
+  </div>
+</div>
+
+<div id="capa-horario" class="capa flex centro oculto">
+  <div class="capa-caja">
+    <div class="capa-cab flex centro"><h3 id="ho-cab">Nuevo horario</h3><button class="boton" data-cerrar="capa-horario">Cancelar</button></div>
+    <label class="etiqueta" for="ho-titulo">Qué</label>
+    <input type="text" id="ho-titulo" class="campo" maxlength="80" autocomplete="off" placeholder="Por ejemplo: Instituto, Entrenamiento, Clase de inglés">
+    <label class="etiqueta">Para quién</label>
+    <div id="ho-personas"></div>
+    <label class="etiqueta">Qué días</label>
+    <div id="ho-dias"></div>
+    <div class="flex centro" style="margin-top:.5rem;font-weight:700">De <select id="ho-hi"></select> a <select id="ho-hf"></select></div>
+    <label class="etiqueta" for="ho-lugar">Dónde (opcional)</label>
+    <input type="text" id="ho-lugar" class="campo" maxlength="80" autocomplete="off">
+    <div class="botones flex centro"><button class="boton prim grande" id="ho-guardar">Guardar</button><span class="uno"></span><button class="boton" id="ho-borrar">Borrar</button></div>
+    <div id="ho-error" class="ayuda" style="color:#C0392B"></div>
   </div>
 </div>
 
@@ -473,6 +513,8 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
   var DIAS_C = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   var MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  var DIAS_SEM = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];   // 1 = lunes … 7 = domingo
+  var SVG_REP = '<svg class="ico-rep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11a7.5 7.5 0 0 1 13-4.6"/><path d="M19.5 13a7.5 7.5 0 0 1-13 4.6"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>';
   var SECCIONES = ['Fruta y verdura', 'Panadería', 'Carne y pescado', 'Lácteos y huevos', 'Despensa', 'Congelados', 'Bebidas', 'Limpieza', 'Higiene y farmacia', 'Otros'];
 
   /* ---------- utilidades ---------- */
@@ -543,6 +585,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
   var notaAutor = '';
   var seccionElegida = null, seccionManual = false;
   var borrarPendiente = null;
+  var hoEdit = { id: null, personas: [], dias: [] };
 
   (function () {
     var href = location.href, i = href.indexOf('api=');
@@ -627,6 +670,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     $('fecha').innerHTML = fechaLarga(d);
     pintarInicio(); pintarEstado();
     if (vista === 'tiempo') pintarVistaTiempo();
+    if (vista === 'horario' && m === 0) pintarHorario();
     comprobarNoche();
     if (d.getMinutes() % 3 === 0) moverPixeles();
     if (d.getHours() === 4 && d.getMinutes() === 0 && d.getTime() - cargadoEn > 3600000) location.reload();
@@ -670,7 +714,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
       cargando = false;
       if (!r || r.ok === false) { ultimoError = (r && r.error) || 'Respuesta vacía'; pintarEstado(); programar(REINTENTO_MS); return; }
       if (datos && !datos.demo) {
-        var partes = ['tiempo', 'gasolineras', 'eventos', 'compra', 'cumples', 'notas'];
+        var partes = ['tiempo', 'gasolineras', 'eventos', 'compra', 'cumples', 'notas', 'horarios'];
         for (var i = 0; i < partes.length; i++) if (!r[partes[i]] && datos[partes[i]]) { r[partes[i]] = datos[partes[i]]; r[partes[i]].antiguo = true; }
       }
       datos = r; ultimoOk = ahoraMs(); ultimoError = '';
@@ -687,9 +731,11 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     if (r.compra) datos.compra = r.compra;
     if (r.cumples) datos.cumples = r.cumples;
     if (r.notas) datos.notas = r.notas;
+    if (r.horarios) datos.horarios = r.horarios;
     guardarDatos();
     pintarInicio(); pintarCompra();
     if (vista === 'calendario') pintarCalendario();
+    if (vista === 'horario') pintarHorario();
     if (visible('capa-notas')) pintarNotas();
     if (visible('capa-cumples')) pintarCumples();
   }
@@ -722,9 +768,34 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     return r;
   }
   function textoCumple(c, anio) { return c.nombre + (c.a ? ' (' + (anio - c.a) + ')' : ''); }
-  function eventosDelDia(ev, d0, filtro) {
+  /* ---------- horarios fijos de la semana ---------- */
+  function listaHorarios() { return (datos && datos.horarios && datos.horarios.lista) || []; }
+  function diaIso(d) { var n = d.getDay(); return n === 0 ? 7 : n; }
+  function minutosDe(s) { var m = /^(\d{1,2}):(\d{2})$/.exec(s || ''); return m ? +m[1] * 60 + +m[2] : null; }
+  function personaFamilia() { var p = listaPersonas(); for (var i = 0; i < p.length; i++) if (p[i].familia) return p[i]; return null; }
+  function indicesDeNombres(nombres) {
+    var p = listaPersonas(), r = [], fam = -1;
+    for (var i = 0; i < p.length; i++) { if (nombres.indexOf(p[i].nombre) > -1) r.push(i); if (p[i].familia) fam = i; }
+    return r.length ? r : (fam > -1 ? [fam] : []);
+  }
+  function textoHoras(h) { return h.hi + (h.hf ? '–' + h.hf : ''); }
+  // Los horarios de un día, con la misma forma que los eventos del calendario
+  function horariosDelDia(d0) {
+    var l = listaHorarios(), r = [], iso = diaIso(d0);
+    for (var i = 0; i < l.length; i++) {
+      var h = l[i], mi = minutosDe(h.hi), mf = minutosDe(h.hf);
+      if (mi === null || !h.dias || h.dias.indexOf(iso) < 0) continue;
+      var sinFin = mf === null || mf <= mi;
+      r.push({ t: h.t, ini: new Date(d0.getFullYear(), d0.getMonth(), d0.getDate(), 0, mi).getTime(),
+        fin: new Date(d0.getFullYear(), d0.getMonth(), d0.getDate(), 0, sinFin ? mi + 60 : mf).getTime(),
+        p: indicesDeNombres(h.per || []), lugar: h.lugar || '', horario: true, sinFin: sinFin, hid: h.id });
+    }
+    return r;
+  }
+  function eventosDelDia(ev, d0, filtro, conHorario) {
     var s0 = d0.getTime(), s1 = inicioDia(d0, 1).getTime(), k = ymd(d0);
     var r = { todos: [], horas: [], s0: s0, s1: s1 }, lista = (ev && ev.eventos) || [];
+    if (conHorario) lista = lista.concat(horariosDelDia(d0));
     for (var i = 0; i < lista.length; i++) {
       var e = lista[i];
       if (filtro && !filtro(e)) continue;
@@ -742,6 +813,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     if (vista === 'tiempo') pintarVistaTiempo();
     if (vista === 'gasolina') pintarGasolina();
     if (vista === 'calendario') pintarCalendario();
+    if (vista === 'horario') pintarHorario();
   }
   function pintarInicio() { pintarAhora(); pintarFamilia(); pintarPersonas(); pintarTablon(); }
   function errorDe(parte) { return datos && datos.errores && datos.errores[parte]; }
@@ -777,6 +849,8 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
       } else if (e.fin > ahora && e.ini < fin) items.push({ orden: e.ini, html: '<b>' + (e.ini < ahora ? 'Ahora' : etiquetaCuando(e.ini, false)) + '</b>' + esc(e.t) });
     }
     for (var n = 0; n < 2; n++) {
+      var hs = horariosDelDia(inicioDia(hoy, n));
+      for (i = 0; i < hs.length; i++) if (esDeFamilia(hs[i]) && hs[i].fin > ahora) items.push({ orden: hs[i].ini, html: '<b>' + (hs[i].ini < ahora ? 'Ahora' : etiquetaCuando(hs[i].ini, false)) + '</b>' + esc(hs[i].t) });
       var c = cumplesDelDia(inicioDia(hoy, n));
       for (i = 0; i < c.length; i++) items.push({ orden: inicioDia(hoy, n).getTime() - 1, cumple: true, html: '<b>' + (n === 0 ? 'Hoy' : 'Mañana') + '</b>Cumpleaños de ' + esc(textoCumple(c[i], hoy.getFullYear())) });
     }
@@ -790,18 +864,18 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
   function columnaPersona(ev, pi, personas, ahoraD) {
     var p = personas[pi], color = p.color, texto = colorTexto(color), ahora = ahoraD.getTime();
     var suyo = function (e) { return e.p.indexOf(pi) > -1 && !esDeFamilia(e); };
-    var hoy = eventosDelDia(ev, inicioDia(ahoraD), suyo), man = eventosDelDia(ev, inicioDia(ahoraD, 1), suyo);
+    var hoy = eventosDelDia(ev, inicioDia(ahoraD), suyo, true), man = eventosDelDia(ev, inicioDia(ahoraD, 1), suyo, true);
     var pend = [], term = 0, i, cuerpo = '';
     for (i = 0; i < hoy.horas.length; i++) { if (hoy.horas[i].fin <= ahora) term++; else pend.push(hoy.horas[i]); }
     for (i = 0; i < hoy.todos.length; i++) cuerpo += '<span class="per-todo" style="background:' + rgba(color, 0.14) + ';color:' + texto + '">' + esc(hoy.todos[i].t) + '</span>';
     for (i = 0; i < pend.length; i++) {
       var e = pend[i], enCurso = e.ini <= ahora, otros = [], meta = [];
       for (var j = 0; j < e.p.length; j++) if (e.p[j] !== pi && personas[e.p[j]]) otros.push(personas[e.p[j]].nombre);
-      if (e.ini < hoy.s0) meta.push('desde ayer'); else if (e.fin - e.ini >= 3 * 3600000 && e.fin <= hoy.s1) meta.push('hasta las ' + hm(e.fin));
+      if (e.ini < hoy.s0) meta.push('desde ayer'); else if (!e.sinFin && e.fin - e.ini >= 3 * 3600000 && e.fin <= hoy.s1) meta.push('hasta las ' + hm(e.fin));
       if (e.lugar) meta.push(e.lugar);
       if (otros.length) meta.push('con ' + otros.join(' y '));
       cuerpo += '<div class="per-ev flex"><span class="per-hora" style="color:' + texto + '">' + (e.ini < hoy.s0 ? '…' : hm(e.ini)) + '</span><div class="uno">' +
-        '<div class="per-tit">' + esc(e.t) + (enCurso ? '<span class="ahora-badge" style="background:' + texto + '">Ahora</span>' : '') + '</div>' +
+        '<div class="per-tit">' + esc(e.t) + (e.horario ? SVG_REP : '') + (enCurso ? '<span class="ahora-badge" style="background:' + texto + '">Ahora</span>' : '') + '</div>' +
         (meta.length ? '<div class="per-meta">' + esc(meta.join(' · ')) + '</div>' : '') + '</div></div>';
     }
     if (!pend.length && !hoy.todos.length) cuerpo += '<div class="per-vacio">' + (term ? 'Nada más por hoy' : 'Hoy no tiene nada') + '</div>';
@@ -850,7 +924,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     else if (!ultimoOk) { txt = cargando ? 'Cargando…' : (ultimoError || 'Sin datos todavía'); led += cargando ? ' amarillo' : ' rojo'; }
     else {
       txt = 'Actualizado ' + hace(ultimoOk);
-      var fallos = [], nombres = { tiempo: 'tiempo', gasolineras: 'gasolineras', eventos: 'agenda', compra: 'compra', cumples: 'cumpleaños', notas: 'tablón' };
+      var fallos = [], nombres = { tiempo: 'tiempo', gasolineras: 'gasolineras', eventos: 'agenda', compra: 'compra', cumples: 'cumpleaños', notas: 'tablón', horarios: 'horarios' };
       for (var k in nombres) if (nombres.hasOwnProperty(k) && errorDe(k)) fallos.push(nombres[k]);
       if (fallos.length) { txt += ' · sin datos nuevos de ' + fallos.join(', '); led += ' amarillo'; }
       if (ultimoError) { txt += ' · ' + ultimoError; led = 'led rojo'; }
@@ -862,7 +936,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
   /* ---------- vistas y gesto para volver ---------- */
   function cambiarVista(v) {
     vista = v;
-    var vs = ['inicio', 'tiempo', 'gasolina', 'compra', 'calendario'];
+    var vs = ['inicio', 'tiempo', 'gasolina', 'compra', 'calendario', 'horario'];
     for (var i = 0; i < vs.length; i++) mostrar('vista-' + vs[i], vs[i] === v);
     var ps = document.querySelectorAll('.pest');
     for (var j = 0; j < ps.length; j++) { if (ps[j].getAttribute('data-vista') === v) ps[j].classList.add('activa'); else ps[j].classList.remove('activa'); }
@@ -872,8 +946,9 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     if (v === 'gasolina') pintarGasolina();
     if (v === 'compra') pintarCompra();
     if (v === 'calendario') { pintarCalendario(); pedirRango(); }
+    if (v === 'horario') pintarHorario();
   }
-  var CAPAS = ['capa-evento', 'capa-ajustes', 'capa-nota', 'capa-notas', 'capa-cumples'];
+  var CAPAS = ['capa-evento', 'capa-ajustes', 'capa-nota', 'capa-notas', 'capa-cumples', 'capa-horario'];
   function capaAbierta() { for (var i = 0; i < CAPAS.length; i++) if (visible(CAPAS[i])) return true; return false; }
   function cerrarCapas() { for (var i = 0; i < CAPAS.length; i++) mostrar(CAPAS[i], false); }
   function comprobarInactividad() {
@@ -1188,7 +1263,7 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
   function pintarDia() {
     var d0 = desdeYmd(diaSel), r = rangoMes(mesVista.a, mesVista.m), ev = eventosRango(r);
     if (diaSel < ymd(r.ini) || diaSel >= ymd(r.fin)) ev = (datos && datos.eventos) || null;
-    var de = eventosDelDia(ev, d0), cumples = cumplesDelDia(d0), ahora = ahoraMs(), html = '', i, c, chips = '';
+    var de = eventosDelDia(ev, d0, null, true), cumples = cumplesDelDia(d0), ahora = ahoraMs(), html = '', i, c, chips = '';
     $('dia-titulo').innerHTML = fechaLarga(d0) + (diaSel === ymd(new Date()) ? ' · hoy' : '');
     for (i = 0; i < cumples.length; i++) chips += '<span class="chip" style="background:' + rgba(COLOR_CUMPLE, 0.18) + ';color:#A3285A">Cumpleaños de ' + esc(textoCumple(cumples[i], d0.getFullYear())) + '</span>';
     for (i = 0; i < de.todos.length; i++) { c = colorPersona(de.todos[i].p[0]); chips += '<span class="chip" style="background:' + rgba(c, 0.15) + ';color:' + colorTexto(c) + '">' + esc(de.todos[i].t) + '</span>'; }
@@ -1196,8 +1271,8 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     for (i = 0; i < de.horas.length; i++) {
       var e = de.horas[i], barras = '';
       for (var j = 0; j < e.p.length; j++) barras += '<i style="background:' + colorPersona(e.p[j]) + '"></i>';
-      html += '<div class="ev flex"><div class="ev-hora"><b>' + (e.ini < de.s0 ? '…' : hm(e.ini)) + '</b><span>' + (e.fin > de.s1 ? '…' : hm(e.fin)) + '</span></div>' +
-        '<div class="ev-barras flex col">' + barras + '</div><div class="uno"><div class="ev-tit">' + esc(e.t) + (diaSel === ymd(new Date()) && e.ini <= ahora && e.fin > ahora ? ' <span class="ahora-badge" style="background:' + VERDE + '">Ahora</span>' : '') + '</div>' +
+      html += '<div class="ev flex"' + (e.horario ? ' data-horario="' + esc(e.hid) + '"' : '') + '><div class="ev-hora"><b>' + (e.ini < de.s0 ? '…' : hm(e.ini)) + '</b><span>' + (e.fin > de.s1 ? '…' : (e.sinFin ? '' : hm(e.fin))) + '</span></div>' +
+        '<div class="ev-barras flex col">' + barras + '</div><div class="uno"><div class="ev-tit">' + esc(e.t) + (e.horario ? SVG_REP : '') + (diaSel === ymd(new Date()) && e.ini <= ahora && e.fin > ahora ? ' <span class="ahora-badge" style="background:' + VERDE + '">Ahora</span>' : '') + '</div>' +
         '<div class="ev-meta">' + esc(nombresDe(e) + (e.lugar ? ' · ' + e.lugar : '')) + '</div></div></div>';
     }
     if (!chips && !de.horas.length) html += '<div class="vacio">No hay nada este día.</div>';
@@ -1250,6 +1325,123 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
       rangos = {};
       if (cfg.api) { cargar(); pedirRango(); } else pintarTodo();
     }, function (msg) { $('ev-guardar').disabled = false; $('ev-error').innerHTML = 'No se ha podido guardar: ' + esc(msg); });
+  }
+
+  /* ---------- HORARIO ---------- */
+  function esDeLaFila(h, fila) { return (h.per || []).indexOf(fila.nombre) > -1; }
+  function pintarHorario() {
+    var per = listaPersonas(), l = listaHorarios(), hoyIso = diaIso(new Date()), filas = [], fam = personaFamilia(), i, d, k;
+    for (i = 0; i < per.length; i++) if (per[i].persona) filas.push(per[i]);
+    if (fam) for (i = 0; i < l.length; i++) if (esDeLaFila(l[i], fam)) { filas.push(fam); break; }
+    if (!filas.length) { $('horario-tabla').innerHTML = '<div class="vacio">Cargando…</div>'; return; }
+    var html = '<table class="hor"><colgroup><col style="width:8.8rem">';
+    for (d = 1; d <= 7; d++) html += '<col>';
+    html += '</colgroup><thead><tr><th></th>';
+    for (d = 1; d <= 7; d++) html += '<th' + (d === hoyIso ? ' class="hoy"' : '') + '><span>' + DIAS_SEM[d - 1] + '</span></th>';
+    html += '</tr></thead><tbody>';
+    for (k = 0; k < filas.length; k++) {
+      var f = filas[k], c = f.color || VERDE, txt = colorTexto(c), nombre = f.nombre;
+      html += '<tr><td><div class="hor-nombre flex centro"><div class="avatar flex centro" style="background:' + c + ';color:' + colorSobre(c) + '">' + esc(f.familia ? '★' : f.nombre.charAt(0)) + '</div><span style="color:' + txt + '">' + esc(nombre) + '</span></div></td>';
+      for (d = 1; d <= 7; d++) {
+        html += '<td' + (d === hoyIso ? ' class="hoy"' : '') + '>';
+        for (i = 0; i < l.length; i++) {
+          var h = l[i];
+          if (!esDeLaFila(h, f) || !h.dias || h.dias.indexOf(d) < 0) continue;
+          html += '<div class="hi" data-horario="' + esc(h.id) + '" style="border-left-color:' + c + ';background:' + rgba(c, 0.1) + '"><b style="color:' + txt + '">' + textoHoras(h) + '</b><span>' + esc(h.t) + '</span></div>';
+        }
+        html += '</td>';
+      }
+      html += '</tr>';
+    }
+    if (!l.length) html += '<tr><td colspan="8"><div class="vacio" style="padding:1rem 0">Todavía no hay horarios. Toca «+ Añadir» para apuntar el trabajo, el instituto, los entrenos… de cada uno.</div></td></tr>';
+    $('horario-tabla').innerHTML = html + '</tbody></table>';
+  }
+  function opcionesHora(conVacio) {
+    var op = conVacio ? '<option value="">—</option>' : '';
+    for (var m = 0; m < 24 * 60; m += 15) op += '<option value="' + textoMin(m) + '">' + textoMin(m) + '</option>';
+    return op;
+  }
+  function abrirHorario(id) {
+    var h = null, l = listaHorarios(), i;
+    for (i = 0; i < l.length; i++) if (l[i].id === id) h = l[i];
+    hoEdit = { id: h ? h.id : null, personas: h ? (h.per || []).slice(0) : [], dias: h ? (h.dias || []).slice(0) : [], borrar: false };
+    $('ho-hi').innerHTML = opcionesHora(false); $('ho-hf').innerHTML = opcionesHora(true);
+    $('ho-cab').innerHTML = h ? 'Cambiar horario' : 'Nuevo horario';
+    $('ho-titulo').value = h ? h.t : ''; $('ho-lugar').value = h ? (h.lugar || '') : '';
+    $('ho-hi').value = h ? h.hi : '16:00'; $('ho-hf').value = h ? (h.hf || '') : '17:00';
+    if (h && $('ho-hi').value !== h.hi) { $('ho-hi').innerHTML += '<option value="' + h.hi + '">' + h.hi + '</option>'; $('ho-hi').value = h.hi; }
+    if (h && h.hf && $('ho-hf').value !== h.hf) { $('ho-hf').innerHTML += '<option value="' + h.hf + '">' + h.hf + '</option>'; $('ho-hf').value = h.hf; }
+    $('ho-borrar').innerHTML = 'Borrar'; $('ho-borrar').className = 'boton'; mostrar('ho-borrar', !!h);
+    $('ho-error').innerHTML = '';
+    pintarHoPersonas(); pintarHoDias();
+    mostrar('capa-horario', true);
+  }
+  function pintarHoPersonas() {
+    var p = listaPersonas(), html = '';
+    for (var i = 0; i < p.length; i++) {
+      if (!p[i].persona && !p[i].familia) continue;
+      var act = hoEdit.personas.indexOf(p[i].nombre) > -1, nombre = p[i].familia ? 'Toda la familia' : p[i].nombre;
+      html += '<span class="elige" data-ho-para="' + esc(p[i].nombre) + '" style="' + (act ? 'border-color:' + p[i].color + ';background:' + rgba(p[i].color, 0.15) + ';color:' + colorTexto(p[i].color) : '') + '"><i class="punto" style="background:' + p[i].color + '"></i>' + esc(nombre) + '</span>';
+    }
+    $('ho-personas').innerHTML = html;
+  }
+  function elegirHoPara(n) {
+    var p = personaPorNombre(n);
+    if (!p) return;
+    if (p.familia) hoEdit.personas = hoEdit.personas[0] === n ? [] : [n];
+    else {
+      var sel = [];
+      for (var i = 0; i < hoEdit.personas.length; i++) { var q = personaPorNombre(hoEdit.personas[i]); if (q && !q.familia) sel.push(hoEdit.personas[i]); }
+      var k = sel.indexOf(n);
+      if (k > -1) sel.splice(k, 1); else sel.push(n);
+      hoEdit.personas = sel;
+    }
+    pintarHoPersonas();
+  }
+  function pintarHoDias() {
+    var html = '', d, lv = true;
+    for (d = 1; d <= 5; d++) if (hoEdit.dias.indexOf(d) < 0) lv = false;
+    for (d = 1; d <= 7; d++) {
+      var act = hoEdit.dias.indexOf(d) > -1;
+      html += '<span class="elige" data-ho-dia="' + d + '" style="min-width:4.2rem;text-align:center' + (act ? ';border-color:#1F5C3F;background:#1F5C3F;color:#FFFFFF' : '') + '">' + DIAS_SEM[d - 1] + '</span>';
+    }
+    html += '<span class="elige" data-ho-dia="lv" style="border-style:dashed' + (lv ? ';border-color:#1F5C3F;color:#1F5C3F' : '') + '">Lunes a viernes</span>';
+    $('ho-dias').innerHTML = html;
+  }
+  function elegirHoDia(v) {
+    var d, i;
+    if (v === 'lv') {
+      var todos = true;
+      for (d = 1; d <= 5; d++) if (hoEdit.dias.indexOf(d) < 0) todos = false;
+      for (d = 1; d <= 5; d++) { i = hoEdit.dias.indexOf(d); if (todos && i > -1) hoEdit.dias.splice(i, 1); if (!todos && i < 0) hoEdit.dias.push(d); }
+    } else {
+      d = parseInt(v, 10); i = hoEdit.dias.indexOf(d);
+      if (i > -1) hoEdit.dias.splice(i, 1); else hoEdit.dias.push(d);
+    }
+    hoEdit.dias.sort(function (a, b) { return a - b; });
+    pintarHoDias();
+  }
+  function guardarHorario() {
+    var titulo = $('ho-titulo').value.replace(/^\s+|\s+$/g, '');
+    if (!titulo) { $('ho-error').innerHTML = 'Escribe qué es'; return; }
+    if (!hoEdit.personas.length) { $('ho-error').innerHTML = 'Elige para quién es'; return; }
+    if (!hoEdit.dias.length) { $('ho-error').innerHTML = 'Elige qué días'; return; }
+    var hf = $('ho-hf').value;
+    if (hf && hf <= $('ho-hi').value) { $('ho-error').innerHTML = 'La hora de fin tiene que ser después de la de inicio'; return; }
+    var params = { accion: hoEdit.id ? 'horario_editar' : 'horario_add', titulo: titulo, persona: hoEdit.personas.join(','), dias: hoEdit.dias.join(','),
+      hi: $('ho-hi').value, hf: hf, lugar: $('ho-lugar').value, por: 'Tablet' };
+    if (hoEdit.id) params.id = hoEdit.id;
+    $('ho-guardar').disabled = true; $('ho-error').innerHTML = 'Guardando…';
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    api(params, function (r) { $('ho-guardar').disabled = false; mostrar('capa-horario', false); aplicarListas(r); toast(hoEdit.id ? 'Horario cambiado' : 'Horario guardado'); },
+      function (msg) { $('ho-guardar').disabled = false; $('ho-error').innerHTML = 'No se ha podido guardar: ' + esc(msg); });
+  }
+  function borrarHorario() {
+    if (!hoEdit.id) return;
+    if (!hoEdit.borrar) { hoEdit.borrar = true; $('ho-borrar').innerHTML = '¿Seguro? Toca otra vez'; $('ho-borrar').className = 'boton borrar-x confirmar'; return; }
+    var id = hoEdit.id;
+    api({ accion: 'horario_borrar', id: id }, function (r) { mostrar('capa-horario', false); aplicarListas(r); toast('Horario borrado'); },
+      function (msg) { $('ho-error').innerHTML = 'No se ha podido borrar: ' + esc(msg); });
   }
 
   /* ---------- CUMPLEAÑOS ---------- */
@@ -1311,7 +1503,8 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     if (t && t.dias) for (i = 0; i < t.dias.length; i++) if (t.dias[i].f === k) partes.push(esc(DESCRIPCION[t.dias[i].c] || '') + ', ' + grados(t.dias[i].min) + ' / ' + grados(t.dias[i].max));
     if (t && t.avisos && t.avisos.length) partes.push(esc(t.avisos[0].texto));
     var ev = datos.eventos, primero = null;
-    if (ev && ev.eventos) for (i = 0; i < ev.eventos.length; i++) { var e = ev.eventos[i]; if (!e.todo && e.ini >= s0 && e.ini < s1 && (!primero || e.ini < primero.ini)) primero = e; }
+    var candidatos = ((ev && ev.eventos) || []).concat(horariosDelDia(base));
+    for (i = 0; i < candidatos.length; i++) { var e = candidatos[i]; if (!e.todo && e.ini >= s0 && e.ini < s1 && (!primero || e.ini < primero.ini)) primero = e; }
     if (primero) partes.push('Primera cita: ' + hm(primero.ini) + ' ' + esc(primero.t) + ' (' + esc(nombresDe(primero)) + ')');
     return partes.length ? (madrugada ? 'Hoy' : 'Mañana') + ': ' + partes.join('<br>') : '';
   }
@@ -1345,25 +1538,21 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
 
   /* ---------- datos de ejemplo ---------- */
   function demo() {
-    var ahora = new Date(), dow = ahora.getDay(), h0 = ahora.getHours();
+    var ahora = new Date(), h0 = ahora.getHours();
     function t(dia, h, m) { return new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + dia, h, m).getTime(); }
     function f(dia) { return ymd(inicioDia(ahora, dia)); }
     var ev = [
-      { t: 'Trabajo', ini: t(0, 8, 0), fin: t(0, 15, 0), p: [0], lugar: '' },
       { t: 'Pádel', ini: t(0, 19, 30), fin: t(0, 21, 0), p: [0], lugar: 'Polideportivo' },
       { t: 'Revisión del coche', ini: t(1, 9, 0), fin: t(1, 10, 0), p: [0], lugar: 'Taller' },
       { t: 'Dentista', ini: t(0, 10, 30), fin: t(0, 11, 15), p: [1], lugar: 'Clínica' },
       { t: 'Recoger un paquete', ini: t(0, 18, 0), fin: t(0, 18, 30), p: [1], lugar: 'Correos' },
       { t: 'Reunión del cole', ini: t(1, 17, 0), fin: t(1, 18, 0), p: [1, 3], lugar: '' },
-      { t: 'Trabajo', ini: t(0, 8, 0), fin: t(0, 15, 0), p: [2], lugar: '' },
       { t: 'Gimnasio', ini: t(0, 19, 0), fin: t(0, 20, 30), p: [2], lugar: '' },
       { t: 'Cine con amigos', ini: t(1, 18, 30), fin: t(1, 21, 0), p: [3], lugar: '' },
       { t: 'Cena en casa de los abuelos', ini: t(0, 21, 0), fin: t(0, 23, 0), p: [4], lugar: '' },
       { t: 'Escapada a Albarracín', todo: true, di: f(4), df: f(6), p: [4] },
-      { t: 'Comida familiar', ini: t(5, 14, 0), fin: t(5, 16, 30), p: [4], lugar: '' },
       { t: 'Examen de conducir', ini: t(8, 9, 0), fin: t(8, 10, 0), p: [3], lugar: '' }
     ];
-    for (var i = 0; i < 21; i++) { var dd = (dow + i) % 7; if (dd === 1 || dd === 3) ev.push({ t: 'Entrenamiento de vóley', ini: t(i, 16, 0), fin: t(i, 17, 30), p: [2], lugar: 'Pabellón' }); }
     var horas = [];
     for (var j = 0; j < 16; j++) {
       var hd = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), h0 + j), hh = hd.getHours();
@@ -1393,6 +1582,16 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
         { id: 'n1', t: 'Llego tarde, no me esperéis a cenar', autor: 'Papá', f: ahora.getTime() - 20 * 60000 },
         { id: 'n2', t: 'He sacado la carne del congelador', autor: 'Mamá', f: ahora.getTime() - 3 * 3600000 },
         { id: 'n3', t: '¿Alguien ha visto mis llaves?', autor: 'Óscar', f: ahora.getTime() - 26 * 3600000 } ] },
+      horarios: { lista: [
+        { id: 'h1', t: 'Trabajo', per: ['Papá'], dias: [1, 2, 3, 4, 5], hi: '08:00', hf: '15:00', lugar: '' },
+        { id: 'h2', t: 'Trabajo', per: ['Sandra'], dias: [1, 2, 3, 4, 5], hi: '08:00', hf: '15:00', lugar: '' },
+        { id: 'h3', t: 'Instituto', per: ['Óscar'], dias: [1, 2, 3, 4, 5], hi: '08:30', hf: '14:30', lugar: '' },
+        { id: 'h4', t: 'Mercado', per: ['Mamá'], dias: [6], hi: '10:00', hf: '11:30', lugar: '' },
+        { id: 'h5', t: 'Comida en casa de los abuelos', per: ['Familia'], dias: [7], hi: '14:00', hf: '16:30', lugar: '' },
+        { id: 'h6', t: 'Entrenamiento de vóley', per: ['Sandra'], dias: [1, 3], hi: '16:00', hf: '17:30', lugar: 'Pabellón' },
+        { id: 'h7', t: 'Inglés', per: ['Óscar'], dias: [2, 4], hi: '17:30', hf: '18:30', lugar: 'Academia' },
+        { id: 'h8', t: 'Yoga', per: ['Mamá'], dias: [2, 4], hi: '19:00', hf: '20:00', lugar: '' },
+        { id: 'h9', t: 'Fútbol', per: ['Óscar'], dias: [6], hi: '11:00', hf: '12:30', lugar: 'Campo municipal' } ] },
       casa: { id: 'casa@ejemplo', nombre: 'Casa' }
     };
   }
@@ -1411,7 +1610,17 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
       else { var a = p.hi.split(':'), b = p.hf.split(':'); e.ini = new Date(d.getFullYear(), d.getMonth(), d.getDate(), +a[0], +a[1]).getTime(); e.fin = Math.max(e.ini + 3600000, new Date(d.getFullYear(), d.getMonth(), d.getDate(), +b[0], +b[1]).getTime()); }
       datos.eventos.eventos.push(e);
     }
-    setTimeout(function () { ok({ ok: true, compra: datos.compra, cumples: datos.cumples, notas: datos.notas }); }, 120);
+    else if (p.accion === 'horario_add' || p.accion === 'horario_editar' || p.accion === 'horario_borrar') {
+      var hl = datos.horarios.lista;
+      for (i = hl.length - 1; i >= 0; i--) if (hl[i].id === p.id) hl.splice(i, 1);
+      if (p.accion !== 'horario_borrar') {
+        var dias = p.dias.split(','), dn = [];
+        for (i = 0; i < dias.length; i++) dn.push(+dias[i]);
+        hl.push({ id: p.id || 'h' + ahoraMs(), t: p.titulo, per: p.persona.split(','), dias: dn, hi: p.hi, hf: p.hf, lugar: p.lugar || '' });
+        hl.sort(function (a, b) { return a.hi < b.hi ? -1 : a.hi > b.hi ? 1 : 0; });
+      }
+    }
+    setTimeout(function () { ok({ ok: true, compra: datos.compra, cumples: datos.cumples, notas: datos.notas, horarios: datos.horarios }); }, 120);
   }
 
   /* ---------- arranque ---------- */
@@ -1451,6 +1660,13 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
     $('ev-todo').addEventListener('change', function () { mostrar('ev-horas', !$('ev-todo').checked); });
     $('ev-hi').addEventListener('change', function () { var p = $('ev-hi').value.split(':'), m = Math.min(23 * 60 + 45, +p[0] * 60 + +p[1] + 60); $('ev-hf').value = pad(Math.floor(m / 60)) + ':' + pad(m % 60); });
     al('ev-guardar', guardarEvento);
+    al('btn-nuevo-horario', function () { abrirHorario(null); });
+    al('ho-guardar', guardarHorario);
+    $('ho-hi').addEventListener('change', function () {
+      var hi = $('ho-hi').value, hf = $('ho-hf').value, m = minutosDe(hi);
+      if (m !== null && hf && hf <= hi) $('ho-hf').value = textoMin(Math.min(23 * 60 + 45, m + 60));
+    });
+    al('ho-borrar', borrarHorario);
     al('compra-btn', function () { anadirCompra($('compra-input').value, seccionManual ? seccionElegida : null); $('compra-input').value = ''; });
     $('compra-input').addEventListener('keydown', function (e) { if (e.keyCode === 13) { anadirCompra($('compra-input').value, seccionManual ? seccionElegida : null); $('compra-input').value = ''; } });
     $('compra-input').addEventListener('input', alEscribirCompra);
@@ -1469,6 +1685,9 @@ select { background: #F7FAF7; color: #1D2B23; border: 1px solid #CFDCD2; border-
         return;
       }
       if ((v = buscarAtributo(t, 'data-para'))) { elegirPara(v); return; }
+      if ((v = buscarAtributo(t, 'data-ho-para'))) { elegirHoPara(v); return; }
+      if ((v = buscarAtributo(t, 'data-ho-dia'))) { elegirHoDia(v); return; }
+      if ((v = buscarAtributo(t, 'data-horario'))) { abrirHorario(v); return; }
       if ((v = buscarAtributo(t, 'data-autor'))) { notaAutor = v; abrirNuevaNota(); return; }
       if ((v = buscarAtributo(t, 'data-borrar-compra'))) { borrarCompra(v); return; }
       if ((v = buscarAtributo(t, 'data-compra'))) { marcarCompra(v); return; }
